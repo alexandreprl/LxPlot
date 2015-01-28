@@ -2,7 +2,7 @@
 
 A library for simple local or distant plotting
 
-## Installation
+## Install
 	Just add lx-plot.jar, jcommon-1.0.17.jar and jfreechart-1.0.14.jar in your classpath
 	
 ## Use
