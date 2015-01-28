@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <project name="lx-plot" basedir="." default="build-dist">
 	<property name="name" value="lx-plot" />
-	<property name="version" value="1.0" />
 	<property name="src.dir" value="src" />
 	<property name="build.dir" value="bin" />
 	<property name="javadoc.dir" value="javadoc" />
@@ -27,14 +26,14 @@
 	</target>
 
 	<target name="build-jar" depends="build">
-		<jar destfile="${name}-v${version}.jar">
+		<jar destfile="${name}.jar">
 			<fileset dir="${build.dir}" />
 			<fileset dir="${src.dir}" includes="**/*.java" />
 		</jar>
 	</target>
 
 	<target name="build-dist" depends="build-jar, build-javadoc">
-		<zip destfile="${name}-v${version}.zip">
+		<zip destfile="${name}-full.zip">
 			<zipfileset prefix="${javadoc.dir}" dir="${javadoc.dir}" />
 			<zipfileset prefix="${libs.dir}" dir="${libs.dir}" />
 			<fileset file="${name}.jar" />
