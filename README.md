@@ -7,3 +7,4 @@ A library for simple local or distant plotting
 	
 ## Use
 	Refer to the examples java source files situated in the example directory. Examples are also included in the jar file in the following package com.lxprl.plot.example
+
