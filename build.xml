@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<project name="lx-plot" basedir="." default="build-dist">
+	<property name="name" value="lx-plot" />
+	<property name="version" value="1.0" />
+	<property name="src.dir" value="src" />
+	<property name="build.dir" value="bin" />
+	<property name="javadoc.dir" value="javadoc" />
+	<property name="libs.dir" value="libs" />
+	
+	<target name="build" description="Compile source tree java files">
+		<mkdir dir="${build.dir}" />
+		<javac destdir="${build.dir}" source="1.6" target="1.6">
+			<src path="${src.dir}" />
+			<classpath>
+				<fileset dir="${libs.dir}">
+			        <include name="**/*.jar"/>
+			      </fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="build-javadoc">
+		<javadoc packagenames="com.lxprl.*" sourcepath="${src.dir}"
+			overview="${src.dir}/overview.html" destdir="${javadoc.dir}" version="true"
+			windowtitle="${name}">
+		</javadoc>
+	</target>
+
+	<target name="build-jar" depends="build">
+		<jar destfile="${name}-v${version}.jar">
+			<fileset dir="${build.dir}" />
+			<fileset dir="${src.dir}" includes="**/*.java" />
+		</jar>
+	</target>
+
+	<target name="build-dist" depends="build-jar, build-javadoc">
+		<zip destfile="${name}-v${version}.zip">
+			<zipfileset prefix="${javadoc.dir}" dir="${javadoc.dir}" />
+			<zipfileset prefix="${libs.dir}" dir="${libs.dir}" />
+			<fileset file="${name}.jar" />
+		</zip>
+	</target>
+
+	<target name="clean" description="Clean output directories">
+		<delete dir="${build.dir}" />
+		<delete file="${name}.jar" />
+		<delete dir="${javadoc.dir}" />
+		<delete file="${name}.zip" />
+	</target>
+
+</project>
