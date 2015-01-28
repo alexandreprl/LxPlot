@@ -1,5 +1,5 @@
 # LxPlot
-========
+
 A library for simple local or distant plotting
 
 ## Installation
