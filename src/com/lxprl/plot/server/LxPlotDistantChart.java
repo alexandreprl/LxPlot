@@ -7,16 +7,17 @@ import com.lxprl.plot.interfaces.ILxPlotChart;
 
 /**
  * Representation of a distant chart made by a client.
- * 
+ *
  * @author Alexandre Perles
- * 
+ *
  */
 public class LxPlotDistantChart implements ILxPlotChart {
 
-	private String name;
-	private PrintWriter out;
+	private final String name;
+	private final PrintWriter out;
 
-	public LxPlotDistantChart(String _name, ChartType _chartType, PrintWriter _out) {
+	public LxPlotDistantChart(final String _name, final ChartType _chartType,
+			final PrintWriter _out) {
 		name = _name;
 		out = _out;
 		out.println("config;" + _name + ";" + _chartType.toString());
@@ -24,12 +25,12 @@ public class LxPlotDistantChart implements ILxPlotChart {
 	}
 
 	@Override
-	public void add(double _x, double _y) {
+	public void add(final double _x, final double _y) {
 		add("", _x, _y);
 	}
 
 	@Override
-	public void add(String _serieName, double _x, double _y) {
+	public void add(final String _serieName, final double _x, final double _y) {
 		out.println("add;" + name + ";" + _serieName + ";" + _x + ";" + _y);
 		out.flush();
 	}

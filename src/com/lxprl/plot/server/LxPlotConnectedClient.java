@@ -9,23 +9,23 @@ import com.lxprl.plot.commons.ChartType;
 
 /**
  * Class handling the connection o a new client to the server.
- * 
+ *
  * @author Alexandre Perles
- * 
+ *
  */
 public class LxPlotConnectedClient implements Runnable {
 
 	private BufferedReader in;
-	private LxPlotServer LxPlotServer;
+	private LxPlotServer lxPlotServer;
 
-	public LxPlotConnectedClient(Socket clientSocket,
-			LxPlotServer _LxPlotServer) {
+	public LxPlotConnectedClient(final Socket clientSocket,
+			final LxPlotServer _lxPlotServer) {
 		try {
-			LxPlotServer = _LxPlotServer;
+			lxPlotServer = _lxPlotServer;
 			in = new BufferedReader(new InputStreamReader(
 					clientSocket.getInputStream()));
 			new Thread(this).start();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -37,28 +37,32 @@ public class LxPlotConnectedClient implements Runnable {
 		String line;
 		try {
 			while ((line = in.readLine()) != null) {
-				String[] res = line.split(";");
+				final String[] res = line.split(";");
 				if (res[0].equals("config")) {
-					LxPlotServer
-							.configChart(res[1], ChartType.valueOf(res[2]));
+					lxPlotServer
+							.setChartType(res[1], ChartType.valueOf(res[2]));
 				} else if (res[0].equals("add")) {
-					if (res[2].isEmpty())
-						LxPlotServer.getChart(res[1]).add(
+					if (res[2].isEmpty()) {
+						lxPlotServer.getChart(res[1]).add(
 								Double.parseDouble(res[3]),
 								Double.parseDouble(res[4]));
-					else
-						LxPlotServer.getChart(res[1]).add(
-								res[2],
+					} else {
+						lxPlotServer.getChart(res[1]).add(res[2],
 								Double.parseDouble(res[3]),
 								Double.parseDouble(res[4]));
+					}
 				} else if (res[0].equals("close")) {
-					LxPlotServer.getChart(res[1]).close();
+					lxPlotServer.getChart(res[1]).close();
+				} else if (res[0].equals("uniqueWindow")) {
+					lxPlotServer.setUniqueWindow(res[1].equals("1"));
+				} else if (res[0].equals("gridSize")) {
+					lxPlotServer.setGridSize(Integer.parseInt(res[1]),
+							Integer.parseInt(res[2]));
 				}
 
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final IOException e) {
+
 		}
 	}
 

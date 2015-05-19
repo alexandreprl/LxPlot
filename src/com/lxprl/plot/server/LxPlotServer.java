@@ -12,57 +12,64 @@ import com.lxprl.plot.interfaces.ILxPlotServer;
 
 /**
  * Server which is able to receive requests from local or distant client.
- * 
+ *
  * @author Alexandre Perles
- * 
+ *
  */
 public class LxPlotServer implements ILxPlotServer, Runnable {
 
 	private ServerSocket socket;
 	private boolean running = false;
-	private Map<String, ILxPlotChart> charts = new TreeMap<String, ILxPlotChart>();
-
-	@Override
-	public ILxPlotChart getChart(String _name) {
-		if (!charts.containsKey(_name)) {
-			charts.put(_name, new LxPlotChart(_name));
-		}
-		return charts.get(_name);
-	}
+	private final Map<String, ILxPlotChart> charts = new TreeMap<String, ILxPlotChart>();
+	private boolean uniqueWindow;
 
 	/**
 	 * Create server NOT accessible through the network
-	 * 
+	 *
 	 * @param _name
 	 */
-	public LxPlotServer(String _name) {
-		LxPlotChart.prepareWindow(_name);
+	public LxPlotServer(final String _name) {
+		LxPlotChart.setFrameName(_name);
 	}
 
 	/**
 	 * Create server accessible through the network and locally
-	 * 
+	 *
 	 * @param _name
 	 * @param _port
 	 */
-	public LxPlotServer(String _name, int _port) {
+	public LxPlotServer(final String _name, final int _port) {
 		this(_name + " - localhost:" + _port);
 		try {
 			socket = new ServerSocket(_port);
 			running = true;
 			new Thread(this).start();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public ILxPlotChart getChart(final String _name) {
+		if (!charts.containsKey(_name)) {
+			charts.put(_name, new LxPlotChart(_name, this));
+		}
+		return charts.get(_name);
+	}
+
+	@Override
+	public boolean getUniqueWindow() {
+		// TODO Auto-generated method stub
+		return uniqueWindow;
 	}
 
 	@Override
 	public void run() {
 		while (running) {
 			try {
-				Socket clientSocket = socket.accept();
+				final Socket clientSocket = socket.accept();
 				new LxPlotConnectedClient(clientSocket, this);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -71,8 +78,18 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 	}
 
 	@Override
-	public void configChart(String _name, ChartType _chartType) {
-		charts.put(_name, new LxPlotChart(_name, _chartType));
+	public void setChartType(final String _name, final ChartType _chartType) {
+		charts.put(_name, new LxPlotChart(_name, _chartType, this));
+	}
+
+	@Override
+	public void setGridSize(final int _cols, final int _rows) {
+		LxPlotChart.setGridSize(_cols, _rows);
+	}
+
+	@Override
+	public void setUniqueWindow(final boolean _uniqueWindow) {
+		uniqueWindow = _uniqueWindow;
 	}
 
 }
