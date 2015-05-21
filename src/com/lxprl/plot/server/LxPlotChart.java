@@ -134,7 +134,7 @@ public class LxPlotChart implements ILxPlotChart {
 
 		hilighted.setLocation(0, 0);
 		int decY = h / 3;
-		hilighted.setSize(w, decY);
+		hilighted.setSize(w, visibleFrames.isEmpty()?h:decY);
 
 		h-=decY;
 
