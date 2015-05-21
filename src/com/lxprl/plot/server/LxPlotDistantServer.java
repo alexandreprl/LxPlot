@@ -55,17 +55,4 @@ public class LxPlotDistantServer implements ILxPlotServer {
 		charts.put(_name, new LxPlotDistantChart(_name, _chartType, out));
 	}
 
-	@Override
-	public void setGridSize(final int _cols, final int _rows) {
-		out.println("gridSize;" + _cols + ";" + _rows);
-		out.flush();
-	}
-
-	@Override
-	public void setUniqueWindow(final boolean _uniqueWindow) {
-		uniqueWindow = _uniqueWindow;
-		out.println("uniqueWindow;" + (_uniqueWindow ? 1 : 0));
-		out.flush();
-	}
-
 }

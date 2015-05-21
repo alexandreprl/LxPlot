@@ -25,7 +25,7 @@ public class LocalChart {
 		// First, we inform the server that the chart "Layer" must be of type
 		// PLOT
 		LxPlot.getServer().setChartType("Layer", ChartType.PLOT);
-		LxPlot.getServer().setUniqueWindow(true);
+		
 
 		// Add plots to the chart "Layer" for serie #0
 		LxPlot.getChart("Layer").add(1, 2);
@@ -60,6 +60,16 @@ public class LocalChart {
 		r.setSeriesPaint(0, Color.green);
 		// Change its title
 		chart.getTitle().setText("New title");
+		
+		for (int i = 0;i<9;i++) {
+			LxPlot.getChart(""+i).add(0, 0);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 		// Close chart
 		// LxPlot.getChart("My chart").close();

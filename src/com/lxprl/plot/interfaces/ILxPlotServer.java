@@ -31,19 +31,4 @@ public interface ILxPlotServer {
 	 * @param _chartType
 	 */
 	public void setChartType(String _name, ChartType _chartType);
-
-	/**
-	 * Set grid size in desktop pane
-	 *
-	 * @param _cols
-	 * @param _rows
-	 */
-	public void setGridSize(int _cols, int _rows);
-
-	/**
-	 * Set whether charts must displayed in multiple windows or not
-	 *
-	 * @param _uniqueWindow
-	 */
-	public void setUniqueWindow(boolean _uniqueWindow);
 }

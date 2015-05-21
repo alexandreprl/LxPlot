@@ -2,15 +2,24 @@ package com.lxprl.plot.server;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.DesktopPaneUI;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -31,10 +40,37 @@ import com.lxprl.plot.interfaces.ILxPlotServer;
  *
  */
 public class LxPlotChart implements ILxPlotChart {
+	private static JMenuBar menuBar;
+	private static JMenu layoutMenu;
+
 	private static JDesktopPane getDesktopPane() {
 		if (LxPlotChart.desktopPane == null) {
-			LxPlotChart.desktopPane = new JDesktopPane();
+			LxPlotChart.desktopPane = new JDesktopPane() {
 
+				@Override
+				public Component add(Component comp) {
+					Component t = super.add(comp);
+					refreshLayout();
+					return t;
+				}
+
+			};
+			LxPlotChart.desktopPane.setUI(new DesktopPaneUI() {
+				@Override
+				public void installUI(JComponent c) {
+					// TODO Auto-generated method stub
+					try {
+						UIManager
+								.setLookAndFeel(com.sun.java.swing.plaf.gtk.GTKLookAndFeel.class
+										.getCanonicalName());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					super.installUI(c);
+				}
+			});
+			LxPlotChart.desktopPane
+					.setDesktopManager(new CustomDesktopManager());
 			LxPlotChart.desktopPane.setPreferredSize(new Dimension(900, 600));
 		}
 		return LxPlotChart.desktopPane;
@@ -44,21 +80,93 @@ public class LxPlotChart implements ILxPlotChart {
 		if (LxPlotChart.frame == null) {
 			LxPlotChart.frame = new JFrame();
 			LxPlotChart.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 			LxPlotChart.frame.getContentPane().add(
-					LxPlotChart.getDesktopPane(), BorderLayout.CENTER);
+					(LxPlotChart.getDesktopPane()), BorderLayout.CENTER);
+			LxPlotChart.frame.getContentPane().add(getMenuBar(),
+					BorderLayout.NORTH);
 			LxPlotChart.frame.pack();
 			LxPlotChart.frame.setVisible(true);
 		}
 		return LxPlotChart.frame;
 	}
 
-	public static void setFrameName(final String _name) {
-		LxPlotChart.frameName = _name;
+	private static JMenuBar getMenuBar() {
+		if (menuBar == null) {
+			menuBar = new JMenuBar();
+			menuBar.add(getLayoutMenu());
+		}
+		return menuBar;
 	}
 
-	public static void setGridSize(final int _cols, final int _rows) {
-		LxPlotChart.cols = _cols;
-		LxPlotChart.rows = _rows;
+	private static JMenu getLayoutMenu() {
+		if (layoutMenu == null) {
+			layoutMenu = new JMenu("Layout");
+			JMenuItem apply = new JMenuItem("Apply");
+			apply.addActionListener(l -> refreshLayout());
+			layoutMenu.add(apply);
+			JMenuItem config = new JMenuItem("Configure ...");
+			config.addActionListener(l -> new ConfigWindow());
+			layoutMenu.add(config);
+		}
+		return layoutMenu;
+	}
+
+	public static void refreshLayout() {
+		int x = 0;
+		int width = 10, height = 10;
+		JInternalFrame[] allFrames = getDesktopPane().getAllFrames();
+
+		JInternalFrame hilighted = null;
+
+		List<JInternalFrame> visibleFrames = new ArrayList<>();
+		for (JInternalFrame jInternalFrame : allFrames) {
+			if (!jInternalFrame.isIcon()) {
+				if (hilighted == null)
+					hilighted = jInternalFrame;
+				else
+					visibleFrames.add(jInternalFrame);
+			}
+		}
+
+		int w = getDesktopPane().getWidth();
+		int h = getDesktopPane().getHeight() - 30;
+
+		hilighted.setLocation(0, 0);
+		int decY = h / 3;
+		hilighted.setSize(w, decY);
+
+		h-=decY;
+
+		if (visibleFrames.isEmpty())
+			return;
+		if (visibleFrames.size() == 1) {
+			width = w;
+			height = h;
+		} else if (visibleFrames.size() <= cols) {
+			width = w / visibleFrames.size();
+			height = h;
+		} else {
+			width = w / cols;
+			int rowCount = (int) (visibleFrames.size() / cols)
+					+ (visibleFrames.size() % cols == 0 ? 0 : 1);
+			height = h / rowCount;
+		}
+		if (width < 10)
+			width = 10;
+		if (height < 10)
+			height = 10;
+
+		for (JInternalFrame frame : visibleFrames) {
+			frame.setLocation(width * (x % cols), decY + height
+					* ((int) (x / cols)));
+			frame.setSize(width, height);
+			x++;
+		}
+	}
+
+	public static void setFrameName(final String _name) {
+		LxPlotChart.frameName = _name;
 	}
 
 	private static JFrame frame;
@@ -82,9 +190,7 @@ public class LxPlotChart implements ILxPlotChart {
 
 	private static JDesktopPane desktopPane;
 
-	private static int cols = 2;
-
-	private static int rows = 2;
+	public static int cols = 2;
 
 	public LxPlotChart(final ILxPlotServer _server) {
 		this("Untitled " + (LxPlotChart.untitledCount++), _server);
@@ -144,8 +250,7 @@ public class LxPlotChart implements ILxPlotChart {
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
-		System.err.println("Trying to close uncloseable chart");
+		getChartInternalFrame().dispose();
 	}
 
 	// public void close() {
@@ -173,17 +278,17 @@ public class LxPlotChart implements ILxPlotChart {
 	// }
 	private JInternalFrame getChartInternalFrame() {
 		if (internalChartFrame == null) {
-			internalChartFrame = new JInternalFrame("Chart #"
-					+ (LxPlotChart.chartCount), true, true, true, true);
-			final int wx = 900 / LxPlotChart.cols;
-			final int wy = 600 / LxPlotChart.rows;
-			internalChartFrame
-			.setBounds(
-					wx
-					* ((LxPlotChart.chartCount - 1) % LxPlotChart.cols),
-					wy
-					* ((LxPlotChart.chartCount - 1) / LxPlotChart.cols),
-					wx, wy);
+			internalChartFrame = new JInternalFrame(name + " ("
+					+ (LxPlotChart.chartCount) + ")", true, true, true, true);
+			// final int wx = 900 / LxPlotChart.cols;
+			// final int wy = 600 / LxPlotChart.rows;
+			// internalChartFrame
+			// .setBounds(
+			// wx
+			// * ((LxPlotChart.chartCount - 1) % LxPlotChart.cols),
+			// wy
+			// * ((LxPlotChart.chartCount - 1) / LxPlotChart.cols),
+			// wx, wy);
 
 			internalChartFrame.add(getChartPanel());
 			internalChartFrame.setVisible(true);
@@ -197,6 +302,7 @@ public class LxPlotChart implements ILxPlotChart {
 			chartPanel = new ChartPanel(getJFreeChart());
 			border = BorderFactory.createTitledBorder(name);
 			chartPanel.setBorder(border);
+			chartPanel.setMinimumSize(new Dimension(10, 10));
 			// default size
 			// chartPanel.setPreferredSize(new Dimension(300, 300));
 		}

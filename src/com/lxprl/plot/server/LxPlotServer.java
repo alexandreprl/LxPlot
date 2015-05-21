@@ -82,14 +82,6 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 		charts.put(_name, new LxPlotChart(_name, _chartType, this));
 	}
 
-	@Override
-	public void setGridSize(final int _cols, final int _rows) {
-		LxPlotChart.setGridSize(_cols, _rows);
-	}
 
-	@Override
-	public void setUniqueWindow(final boolean _uniqueWindow) {
-		uniqueWindow = _uniqueWindow;
-	}
 
 }

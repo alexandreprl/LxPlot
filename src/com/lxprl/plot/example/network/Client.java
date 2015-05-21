@@ -21,13 +21,13 @@ public class Client {
 
 		// Plot two points in serie "My serie"
 		LxPlot.getServer("My server").getChart("My chart")
-				.add("My serie", 3, 2.5);
+		.add("My serie", 3, 2.5);
 		LxPlot.getServer("My server").getChart("My chart")
-				.add("My serie", 5, 2);
+		.add("My serie", 5, 2);
 
 		// Preconfigure chart by setting name and type
 		LxPlot.getServer("My server")
-				.setChartType("My chart 2", ChartType.PLOT);
+		.setChartType("My chart 2", ChartType.PLOT);
 
 		// Plot 3 points
 		LxPlot.getServer("My server").getChart("My chart 2").add(1, 2);

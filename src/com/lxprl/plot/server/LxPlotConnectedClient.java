@@ -40,7 +40,7 @@ public class LxPlotConnectedClient implements Runnable {
 				final String[] res = line.split(";");
 				if (res[0].equals("config")) {
 					lxPlotServer
-							.setChartType(res[1], ChartType.valueOf(res[2]));
+					.setChartType(res[1], ChartType.valueOf(res[2]));
 				} else if (res[0].equals("add")) {
 					if (res[2].isEmpty()) {
 						lxPlotServer.getChart(res[1]).add(
@@ -53,13 +53,7 @@ public class LxPlotConnectedClient implements Runnable {
 					}
 				} else if (res[0].equals("close")) {
 					lxPlotServer.getChart(res[1]).close();
-				} else if (res[0].equals("uniqueWindow")) {
-					lxPlotServer.setUniqueWindow(res[1].equals("1"));
-				} else if (res[0].equals("gridSize")) {
-					lxPlotServer.setGridSize(Integer.parseInt(res[1]),
-							Integer.parseInt(res[2]));
 				}
-
 			}
 		} catch (final IOException e) {
 
