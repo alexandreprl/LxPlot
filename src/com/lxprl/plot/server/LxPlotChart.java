@@ -55,20 +55,7 @@ public class LxPlotChart implements ILxPlotChart {
 				}
 
 			};
-			LxPlotChart.desktopPane.setUI(new DesktopPaneUI() {
-				@Override
-				public void installUI(JComponent c) {
-					// TODO Auto-generated method stub
-					try {
-						UIManager
-								.setLookAndFeel(com.sun.java.swing.plaf.gtk.GTKLookAndFeel.class
-										.getCanonicalName());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					super.installUI(c);
-				}
-			});
+
 			LxPlotChart.desktopPane
 					.setDesktopManager(new CustomDesktopManager());
 			LxPlotChart.desktopPane.setPreferredSize(new Dimension(900, 600));
