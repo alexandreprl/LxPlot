@@ -10,20 +10,19 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
-import javax.swing.plaf.DesktopPaneUI;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
@@ -120,7 +119,7 @@ public class LxPlotChart implements ILxPlotChart {
 		int h = getDesktopPane().getHeight() - 30;
 
 		hilighted.setLocation(0, 0);
-		int decY = h / 3;
+		int decY = h / 2;
 		hilighted.setSize(w, visibleFrames.isEmpty()?h:decY);
 
 		h-=decY;
@@ -330,8 +329,11 @@ public class LxPlotChart implements ILxPlotChart {
 				break;
 
 			}
-
 			final XYPlot plot = (XYPlot) chart.getPlot();
+
+	        NumberAxis range = (NumberAxis) plot.getRangeAxis();
+	        range.setAutoRange(true);
+	        range.setAutoRangeIncludesZero(false);
 			plot.setBackgroundPaint(Color.white);
 			plot.setRangeGridlinePaint(Color.black);
 		}
