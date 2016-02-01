@@ -1,36 +1,25 @@
 package com.lxprl.plot.server;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.swing.BorderFactory;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.border.TitledBorder;
-
+import com.lxprl.plot.commons.ChartType;
+import com.lxprl.plot.commons.XJFrame;
+import com.lxprl.plot.interfaces.ILxPlotChart;
+import com.lxprl.plot.interfaces.ILxPlotServer;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import com.lxprl.plot.commons.ChartType;
-import com.lxprl.plot.interfaces.ILxPlotChart;
-import com.lxprl.plot.interfaces.ILxPlotServer;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Real chart displayed by a server.
@@ -62,9 +51,9 @@ public class LxPlotChart implements ILxPlotChart {
 		return LxPlotChart.desktopPane;
 	}
 
-	private static JFrame getJFrame() {
+	private static XJFrame getJFrame() {
 		if (LxPlotChart.frame == null) {
-			LxPlotChart.frame = new JFrame();
+			LxPlotChart.frame = new XJFrame("LxPlot");
 			LxPlotChart.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 			LxPlotChart.frame.getContentPane().add(
@@ -103,26 +92,18 @@ public class LxPlotChart implements ILxPlotChart {
 		int width = 10, height = 10;
 		JInternalFrame[] allFrames = getDesktopPane().getAllFrames();
 
-		JInternalFrame hilighted = null;
 
 		List<JInternalFrame> visibleFrames = new ArrayList<>();
 		for (JInternalFrame jInternalFrame : allFrames) {
 			if (!jInternalFrame.isIcon()) {
-				if (hilighted == null)
-					hilighted = jInternalFrame;
-				else
-					visibleFrames.add(jInternalFrame);
+				visibleFrames.add(jInternalFrame);
 			}
 		}
 
 		int w = getDesktopPane().getWidth();
 		int h = getDesktopPane().getHeight() - 30;
 
-		hilighted.setLocation(0, 0);
-		int decY = h / 2;
-		hilighted.setSize(w, visibleFrames.isEmpty()?h:decY);
 
-		h-=decY;
 
 		if (visibleFrames.isEmpty())
 			return;
@@ -140,11 +121,11 @@ public class LxPlotChart implements ILxPlotChart {
 		}
 		if (width < 10)
 			width = 10;
-		if (height < 10)
-			height = 10;
+		if (height < 80)
+			height = 80;
 
 		for (JInternalFrame frame : visibleFrames) {
-			frame.setLocation(width * (x % cols), decY + height
+			frame.setLocation(width * (x % cols),  height
 					* ((int) (x / cols)));
 			frame.setSize(width, height);
 			x++;
@@ -155,7 +136,7 @@ public class LxPlotChart implements ILxPlotChart {
 		LxPlotChart.frameName = _name;
 	}
 
-	private static JFrame frame;
+	private static XJFrame frame;
 	// private JPanel chartContainer;
 	private XYSeriesCollection dataset;
 	private static int chartCount = 0;
@@ -176,7 +157,7 @@ public class LxPlotChart implements ILxPlotChart {
 
 	private static JDesktopPane desktopPane;
 
-	public static int cols = 2;
+	public static int cols = 1;
 
 	public LxPlotChart(final ILxPlotServer _server) {
 		this("Untitled " + (LxPlotChart.untitledCount++), _server);
