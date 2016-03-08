@@ -1,15 +1,16 @@
 package com.lxprl.plot.server;
 
+import com.lxprl.plot.commons.ChartType;
+import com.lxprl.plot.interfaces.ILxPlotChart;
+import com.lxprl.plot.interfaces.ILxPlotServer;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.lxprl.plot.commons.ChartType;
-import com.lxprl.plot.interfaces.ILxPlotChart;
-import com.lxprl.plot.interfaces.ILxPlotServer;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Representation of the server made by a client
@@ -22,6 +23,7 @@ public class LxPlotDistantServer implements ILxPlotServer {
 	private Socket socket;
 	private PrintWriter out;
 	private boolean uniqueWindow;
+	private ReentrantLock chartLock = new ReentrantLock();
 
 	public LxPlotDistantServer(final String _host, final int _port) {
 		try {
@@ -38,10 +40,12 @@ public class LxPlotDistantServer implements ILxPlotServer {
 
 	@Override
 	public ILxPlotChart getChart(final String _name) {
+		chartLock.lock();
 		if (!charts.containsKey(_name)) {
 			charts.put(_name,
 					new LxPlotDistantChart(_name, ChartType.LINE, out));
 		}
+		chartLock.unlock();
 		return charts.get(_name);
 	}
 

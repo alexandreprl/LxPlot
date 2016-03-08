@@ -1,12 +1,13 @@
 package com.lxprl.plot;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.lxprl.plot.interfaces.ILxPlotChart;
 import com.lxprl.plot.interfaces.ILxPlotServer;
 import com.lxprl.plot.server.LxPlotDistantServer;
 import com.lxprl.plot.server.LxPlotServer;
+
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Main class giving access to all the functionnalities of the library
@@ -15,6 +16,7 @@ import com.lxprl.plot.server.LxPlotServer;
  *
  */
 public class LxPlot {
+	private static ReentrantLock serverLock = new ReentrantLock();
 
 	/**
 	 * Configure the connection with the default server.
@@ -90,9 +92,11 @@ public class LxPlot {
 	 * @return
 	 */
 	public static ILxPlotServer getServer() {
+		serverLock.lock();
 		if (LxPlot.defaultServer == null) {
 			LxPlot.defaultServer = new LxPlotServer("default");
 		}
+		serverLock.unlock();
 		return LxPlot.defaultServer;
 	}
 
@@ -104,9 +108,12 @@ public class LxPlot {
 	 * @return
 	 */
 	public static ILxPlotServer getServer(final String _name) {
+
+		serverLock.lock();
 		if (!LxPlot.servers.containsKey(_name)) {
 			LxPlot.servers.put(_name, new LxPlotServer(_name));
 		}
+		serverLock.unlock();
 		return LxPlot.servers.get(_name);
 	}
 
