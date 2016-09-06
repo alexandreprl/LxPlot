@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.lxprl.plot.commons.ChartType;
 import com.lxprl.plot.interfaces.ILxPlotChart;
@@ -22,6 +23,7 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 	private boolean running = false;
 	private final Map<String, ILxPlotChart> charts = new TreeMap<String, ILxPlotChart>();
 	private boolean uniqueWindow;
+	private ReentrantLock chartLock = new ReentrantLock();
 
 	/**
 	 * Create server NOT accessible through the network
@@ -51,9 +53,11 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 
 	@Override
 	public ILxPlotChart getChart(final String _name) {
+		chartLock.lock();
 		if (!charts.containsKey(_name)) {
 			charts.put(_name, new LxPlotChart(_name, this));
 		}
+		chartLock.unlock();
 		return charts.get(_name);
 	}
 
