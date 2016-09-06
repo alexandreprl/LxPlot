@@ -52,12 +52,10 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 	}
 
 	@Override
-	public ILxPlotChart getChart(final String _name) {
-		chartLock.lock();
+	public synchronized ILxPlotChart getChart(final String _name) {
 		if (!charts.containsKey(_name)) {
 			charts.put(_name, new LxPlotChart(_name, this));
 		}
-		chartLock.unlock();
 		return charts.get(_name);
 	}
 

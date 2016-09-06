@@ -69,7 +69,7 @@ public class LxPlotChart implements ILxPlotChart {
         this(_name, ChartType.LINE, _server);
     }
 
-    private static JDesktopPane getDesktopPane() {
+    private synchronized static JDesktopPane getDesktopPane() {
         if (LxPlotChart.desktopPane == null) {
             LxPlotChart.desktopPane = new JDesktopPane() {
 
@@ -89,7 +89,7 @@ public class LxPlotChart implements ILxPlotChart {
         return LxPlotChart.desktopPane;
     }
 
-    private static XJFrame getJFrame() {
+    private synchronized static XJFrame getJFrame() {
         frameLock.lock();
         if (LxPlotChart.frame == null) {
             LxPlotChart.frame = new XJFrame("LxPlot");
@@ -106,7 +106,7 @@ public class LxPlotChart implements ILxPlotChart {
         return LxPlotChart.frame;
     }
 
-    private static JMenuBar getMenuBar() {
+    private synchronized static JMenuBar getMenuBar() {
         if (menuBar == null) {
             menuBar = new JMenuBar();
             menuBar.add(getLayoutMenu());
@@ -114,7 +114,7 @@ public class LxPlotChart implements ILxPlotChart {
         return menuBar;
     }
 
-    private static JMenu getLayoutMenu() {
+    private synchronized static JMenu getLayoutMenu() {
         if (layoutMenu == null) {
             layoutMenu = new JMenu("Layout");
             JMenuItem apply = new JMenuItem("Apply");
@@ -238,7 +238,7 @@ public class LxPlotChart implements ILxPlotChart {
     // }
     // return chartContainer;
     // }
-    private JInternalFrame getChartInternalFrame() {
+    private synchronized JInternalFrame getChartInternalFrame() {
         if (internalChartFrame == null) {
             internalChartFrame = new JInternalFrame(name + " ("
                     + (LxPlotChart.chartCount) + ")", true, true, true, true);
@@ -258,7 +258,7 @@ public class LxPlotChart implements ILxPlotChart {
         return internalChartFrame;
     }
 
-    private ChartPanel getChartPanel() {
+    private synchronized ChartPanel getChartPanel() {
         // we put the chart into a panel
         if (chartPanel == null) {
             chartPanel = new ChartPanel(getJFreeChart());
@@ -271,14 +271,14 @@ public class LxPlotChart implements ILxPlotChart {
         return chartPanel;
     }
 
-    private XYSeriesCollection getDataset() {
+    private synchronized XYSeriesCollection getDataset() {
         if (dataset == null) {
             dataset = new XYSeriesCollection();
         }
         return dataset;
     }
 
-    public JFreeChart getJFreeChart() {
+    public synchronized JFreeChart getJFreeChart() {
         if (chart == null) {
             switch (chartType) {
                 case LINE:
@@ -316,7 +316,7 @@ public class LxPlotChart implements ILxPlotChart {
         return chart;
     }
 
-    private XYSeries getSeries(final String _serieName) {
+    private synchronized XYSeries getSeries(final String _serieName) {
         if (firstSerie == null) {
             firstSerie = _serieName;
         }
