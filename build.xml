@@ -33,9 +33,9 @@
 		</jar>
 	</target>
 
-	<target name="build-dist" depends="build-jar, build-javadoc">
+	<target name="build-dist" depends="build-jar">
 		<zip destfile="${name}-full.zip">
-			<zipfileset prefix="${javadoc.dir}" dir="${javadoc.dir}" />
+			
 			<zipfileset prefix="${libs.dir}" dir="${libs.dir}" />
 			<fileset file="${name}.jar" />
 		</zip>
