@@ -30,6 +30,8 @@
 		<jar destfile="${name}.jar">
 			<fileset dir="${build.dir}" />
 			<fileset dir="${src.dir}" includes="**/*.java" />
+            <zipfileset excludes="META-INF/*.SF" src="./libs/jfreechart/jcommon-1.0.17.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./libs/jfreechart/jfreechart-1.0.14.jar"/>
 		</jar>
 	</target>
 
