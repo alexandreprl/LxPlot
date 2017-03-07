@@ -40,11 +40,7 @@ public class LxPlotDistantServer implements ILxPlotServer {
 
 	@Override
 	public synchronized ILxPlotChart getChart(final String _name) {
-		if (!charts.containsKey(_name)) {
-			charts.put(_name,
-					new LxPlotDistantChart(_name, ChartType.LINE, out));
-		}
-		return charts.get(_name);
+		return getChart(_name, ChartType.LINE);
 	}
 
 	@Override
@@ -53,8 +49,13 @@ public class LxPlotDistantServer implements ILxPlotServer {
 	}
 
 	@Override
-	public void setChartType(final String _name, final ChartType _chartType) {
-		charts.put(_name, new LxPlotDistantChart(_name, _chartType, out));
+	public ILxPlotChart getChart(String _name, ChartType _chartType) {
+		if (!charts.containsKey(_name)) {
+			charts.put(_name,
+					new LxPlotDistantChart(_name, _chartType, out));
+		}
+		return charts.get(_name);
 	}
+
 
 }

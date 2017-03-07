@@ -40,7 +40,7 @@ public class LxPlotConnectedClient implements Runnable {
 				final String[] res = line.split(";");
 				if (res[0].equals("config")) {
 					lxPlotServer
-					.setChartType(res[1], ChartType.valueOf(res[2]));
+					.getChart(res[1], ChartType.valueOf(res[2]));
 				} else if (res[0].equals("add")) {
 					if (res[2].isEmpty()) {
 						lxPlotServer.getChart(res[1]).add(

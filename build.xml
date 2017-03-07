@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="lx-plot" basedir="." default="build-dist">
+<project name="lx-plot" basedir="." default="build-jar">
 	<property name="name" value="lx-plot" />
 	<property name="src.dir" value="src" />
 	<property name="build.dir" value="bin" />
@@ -34,14 +34,14 @@
             <zipfileset excludes="META-INF/*.SF" src="./libs/jfreechart/jfreechart-1.0.14.jar"/>
 		</jar>
 	</target>
-
+<!--
 	<target name="build-dist" depends="build-jar">
 		<zip destfile="${name}-full.zip">
 			
 			<zipfileset prefix="${libs.dir}" dir="${libs.dir}" />
 			<fileset file="${name}.jar" />
 		</zip>
-	</target>
+	</target>-->
 
 	<target name="clean" description="Clean output directories">
 		<delete dir="${build.dir}" />

@@ -27,7 +27,7 @@ public class Client {
 
 		// Preconfigure chart by setting name and type
 		LxPlot.getServer("My server")
-		.setChartType("My chart 2", ChartType.PLOT);
+		.getChart("My chart 2", ChartType.PLOT);
 
 		// Plot 3 points
 		LxPlot.getServer("My server").getChart("My chart 2").add(1, 2);

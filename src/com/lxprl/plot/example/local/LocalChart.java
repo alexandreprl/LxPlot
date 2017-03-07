@@ -23,9 +23,7 @@ public class LocalChart {
 	public static void main(final String[] args) {
 
 		// First, we inform the server that the chart "Layer" must be of type
-		// PLOT
-		LxPlot.getServer().setChartType("Layer", ChartType.PLOT);
-		
+		LxPlot.getChart("Layer", ChartType.PLOT);
 
 		// Add plots to the chart "Layer" for serie #0
 		LxPlot.getChart("Layer").add(1, 2);
@@ -58,19 +56,17 @@ public class LocalChart {
 		r.setSeriesShape(0, new Rectangle(3, 3));
 		r.setSeriesShape(0, new Ellipse2D.Float(3, 3, 3, 3));
 		r.setSeriesPaint(0, Color.green);
-		// Change its title
-		chart.getTitle().setText("New title");
 		
-		for (int i = 0;i<9;i++) {
-			LxPlot.getChart(""+i).add(0, 0);
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 
+
+		// First, we inform the server that the chart "Layer" must be of type
+		LxPlot.getChart("Bar chart", ChartType.BAR);
+
+		// Add plots to the chart "Layer" for serie #0
+		LxPlot.getChart("Bar chart").add(1, 2);
+		LxPlot.getChart("Bar chart").add(2, 2.5);
+		LxPlot.getChart("Bar chart").add(2, 3);
+		
 		// Close chart
 		// LxPlot.getChart("My chart").close();
 		// LxPlot.getChart("Layer").close();

@@ -18,17 +18,19 @@ public interface ILxPlotServer {
 	public ILxPlotChart getChart(String _name);
 
 	/**
+	 * Get or create the chart which is called _name and set the chart type
+	 *
+	 * @param _name
+	 * @param _chartType
+	 * @return
+	 */
+	public ILxPlotChart getChart(String _name, ChartType _chartType);
+
+	/**
 	 * Get whether charts must be in different windows or not
 	 *
 	 * @return
 	 */
 	public boolean getUniqueWindow();
 
-	/**
-	 * Preconfigure the chart _name with a chart's type
-	 *
-	 * @param _name
-	 * @param _chartType
-	 */
-	public void setChartType(String _name, ChartType _chartType);
 }

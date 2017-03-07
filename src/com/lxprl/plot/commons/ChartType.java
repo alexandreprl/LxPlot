@@ -7,5 +7,5 @@ package com.lxprl.plot.commons;
  *
  */
 public enum ChartType {
-	PLOT, LINE
+	PLOT, LINE, BAR
 }

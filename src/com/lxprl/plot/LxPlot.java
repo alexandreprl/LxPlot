@@ -1,5 +1,6 @@
 package com.lxprl.plot;
 
+import com.lxprl.plot.commons.ChartType;
 import com.lxprl.plot.interfaces.ILxPlotChart;
 import com.lxprl.plot.interfaces.ILxPlotServer;
 import com.lxprl.plot.server.LxPlotDistantServer;
@@ -72,18 +73,14 @@ public class LxPlot {
 	public static ILxPlotChart getChart(final String _name) {
 		return LxPlot.getServer().getChart(_name);
 	}
-
 	/**
-	 * Get the chart _name located on the server _serverName if any. Otherwise,
-	 * create it.
+	 * Get the chart with the given name if any. Otherwise, create it.
 	 *
 	 * @param _name
-	 * @param _serverName
 	 * @return
 	 */
-	public static ILxPlotChart getChart(final String _name,
-			final String _serverName) {
-		return LxPlot.getServer(_serverName).getChart(_name);
+	public static ILxPlotChart getChart(final String _name, final ChartType _chartType) {
+		return LxPlot.getServer().getChart(_name, _chartType);
 	}
 
 	/**

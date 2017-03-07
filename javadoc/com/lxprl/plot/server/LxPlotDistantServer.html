@@ -162,16 +162,16 @@ implements <a href="../../../../com/lxprl/plot/interfaces/ILxPlotServer.html" ti
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/lxprl/plot/server/LxPlotDistantServer.html#getUniqueWindow--">getUniqueWindow</a></span>()</code>
-<div class="block">Get whether charts must be in different windows or not</div>
+<td class="colFirst"><code><a href="../../../../com/lxprl/plot/interfaces/ILxPlotChart.html" title="interface in com.lxprl.plot.interfaces">ILxPlotChart</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/lxprl/plot/server/LxPlotDistantServer.html#getChart-java.lang.String-com.lxprl.plot.commons.ChartType-">getChart</a></span>(java.lang.String&nbsp;_name,
+        <a href="../../../../com/lxprl/plot/commons/ChartType.html" title="enum in com.lxprl.plot.commons">ChartType</a>&nbsp;_chartType)</code>
+<div class="block">Get or create the chart which is called _name and set the chart type</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/lxprl/plot/server/LxPlotDistantServer.html#setChartType-java.lang.String-com.lxprl.plot.commons.ChartType-">setChartType</a></span>(java.lang.String&nbsp;_name,
-            <a href="../../../../com/lxprl/plot/commons/ChartType.html" title="enum in com.lxprl.plot.commons">ChartType</a>&nbsp;_chartType)</code>
-<div class="block">Preconfigure the chart _name with a chart's type</div>
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/lxprl/plot/server/LxPlotDistantServer.html#getUniqueWindow--">getUniqueWindow</a></span>()</code>
+<div class="block">Get whether charts must be in different windows or not</div>
 </td>
 </tr>
 </table>
@@ -246,19 +246,20 @@ implements <a href="../../../../com/lxprl/plot/interfaces/ILxPlotServer.html" ti
 </dl>
 </li>
 </ul>
-<a name="setChartType-java.lang.String-com.lxprl.plot.commons.ChartType-">
+<a name="getChart-java.lang.String-com.lxprl.plot.commons.ChartType-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>setChartType</h4>
-<pre>public&nbsp;void&nbsp;setChartType(java.lang.String&nbsp;_name,
-                         <a href="../../../../com/lxprl/plot/commons/ChartType.html" title="enum in com.lxprl.plot.commons">ChartType</a>&nbsp;_chartType)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../com/lxprl/plot/interfaces/ILxPlotServer.html#setChartType-java.lang.String-com.lxprl.plot.commons.ChartType-">ILxPlotServer</a></code></span></div>
-<div class="block">Preconfigure the chart _name with a chart's type</div>
+<h4>getChart</h4>
+<pre>public&nbsp;<a href="../../../../com/lxprl/plot/interfaces/ILxPlotChart.html" title="interface in com.lxprl.plot.interfaces">ILxPlotChart</a>&nbsp;getChart(java.lang.String&nbsp;_name,
+                             <a href="../../../../com/lxprl/plot/commons/ChartType.html" title="enum in com.lxprl.plot.commons">ChartType</a>&nbsp;_chartType)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../com/lxprl/plot/interfaces/ILxPlotServer.html#getChart-java.lang.String-com.lxprl.plot.commons.ChartType-">ILxPlotServer</a></code></span></div>
+<div class="block">Get or create the chart which is called _name and set the chart type</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../com/lxprl/plot/interfaces/ILxPlotServer.html#setChartType-java.lang.String-com.lxprl.plot.commons.ChartType-">setChartType</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/lxprl/plot/interfaces/ILxPlotServer.html" title="interface in com.lxprl.plot.interfaces">ILxPlotServer</a></code></dd>
+<dd><code><a href="../../../../com/lxprl/plot/interfaces/ILxPlotServer.html#getChart-java.lang.String-com.lxprl.plot.commons.ChartType-">getChart</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/lxprl/plot/interfaces/ILxPlotServer.html" title="interface in com.lxprl.plot.interfaces">ILxPlotServer</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>

@@ -53,10 +53,7 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 
 	@Override
 	public synchronized ILxPlotChart getChart(final String _name) {
-		if (!charts.containsKey(_name)) {
-			charts.put(_name, new LxPlotChart(_name, this));
-		}
-		return charts.get(_name);
+		return getChart(_name, ChartType.LINE);
 	}
 
 	@Override
@@ -80,10 +77,11 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 	}
 
 	@Override
-	public void setChartType(final String _name, final ChartType _chartType) {
-		charts.put(_name, new LxPlotChart(_name, _chartType, this));
+	public ILxPlotChart getChart(String _name, ChartType _chartType) {
+		if (!charts.containsKey(_name)) {
+			charts.put(_name, new LxPlotChart(_name, _chartType, this));
+		}
+		return charts.get(_name);
 	}
-
-
 
 }
