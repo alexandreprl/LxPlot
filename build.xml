@@ -27,11 +27,15 @@
 	</target>
 
 	<target name="build-jar" depends="build">
-		<jar destfile="${name}.jar">
+		<jar destfile="${name}-standalone.jar">
 			<fileset dir="${build.dir}" />
 			<fileset dir="${src.dir}" includes="**/*.java" />
             <zipfileset excludes="META-INF/*.SF" src="./libs/jfreechart/jcommon-1.0.17.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="./libs/jfreechart/jfreechart-1.0.14.jar"/>
+		</jar>
+		<jar destfile="${name}.jar">
+			<fileset dir="${build.dir}" />
+			<fileset dir="${src.dir}" includes="**/*.java" />
 		</jar>
 	</target>
 <!--
