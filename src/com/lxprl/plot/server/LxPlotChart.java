@@ -216,7 +216,8 @@ public class LxPlotChart implements ILxPlotChart {
 			getCategoryDataset().addValue(_y, _serieName, String.valueOf(_x));
 			break;
 		}
-		getJFrame().setVisible(true);
+		if (!getJFrame().isVisible())
+			getJFrame().setVisible(true);
 	}
 
 	@Override
