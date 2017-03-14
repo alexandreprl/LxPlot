@@ -103,7 +103,7 @@ public class LxPlotChart implements ILxPlotChart {
 		if (LxPlotChart.frame == null) {
 			LxPlotChart.frame = new XJFrame("LxPlot");
 			LxPlotChart.frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-			//TODO handle close and reopn
+
 			LxPlotChart.frame.getContentPane().add((LxPlotChart.getDesktopPane()), BorderLayout.CENTER);
 			LxPlotChart.frame.getContentPane().add(getMenuBar(), BorderLayout.NORTH);
 			LxPlotChart.frame.pack();
