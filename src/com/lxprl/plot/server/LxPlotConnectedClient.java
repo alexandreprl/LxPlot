@@ -26,7 +26,6 @@ public class LxPlotConnectedClient implements Runnable {
 					clientSocket.getInputStream()));
 			new Thread(this).start();
 		} catch (final IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

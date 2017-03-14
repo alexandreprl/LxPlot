@@ -37,7 +37,6 @@ public class LocalChart {
 		try {
 			Thread.sleep(1000);
 		} catch (final InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// Add plots to the chart "My Chart" which will be created during this
@@ -66,6 +65,18 @@ public class LocalChart {
 		LxPlot.getChart("Bar chart").add(1, 2);
 		LxPlot.getChart("Bar chart").add(2, 2.5);
 		LxPlot.getChart("Bar chart").add(2, 3);
+		
+		//Dispose test
+		for (int i=0;i<1000;i++){
+			LxPlot.getChart("Bar chart").add(i, 3);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+			
 		
 		// Close chart
 		// LxPlot.getChart("My chart").close();

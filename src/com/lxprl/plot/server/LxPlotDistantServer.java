@@ -30,10 +30,9 @@ public class LxPlotDistantServer implements ILxPlotServer {
 			socket = new Socket(_host, _port);
 			out = new PrintWriter(socket.getOutputStream());
 		} catch (final UnknownHostException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} catch (final IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

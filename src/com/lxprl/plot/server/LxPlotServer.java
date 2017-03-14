@@ -58,7 +58,6 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 
 	@Override
 	public boolean getUniqueWindow() {
-		// TODO Auto-generated method stub
 		return uniqueWindow;
 	}
 
@@ -69,7 +68,6 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 				final Socket clientSocket = socket.accept();
 				new LxPlotConnectedClient(clientSocket, this);
 			} catch (final IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

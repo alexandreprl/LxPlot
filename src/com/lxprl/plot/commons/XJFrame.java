@@ -1,8 +1,10 @@
 package com.lxprl.plot.commons;
 
-import javax.swing.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.function.Consumer;
+
+import javax.swing.JFrame;
 
 public class XJFrame extends JFrame {
 
@@ -10,6 +12,7 @@ public class XJFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -4534786729272462775L;
+	private Consumer<XJFrame> disposeListener;
 
 	public XJFrame(String title) {
 		super(title);
@@ -18,15 +21,20 @@ public class XJFrame extends JFrame {
 	}
 
 	@Override
+	public void dispose() {
+		super.dispose();
+		if (disposeListener != null)
+			disposeListener.accept(this);
+	}
+
+	@Override
 	public void pack() {
 		super.pack();
 		String title = getTitle();
-		setSize(Integer.parseInt(Data.get("gui_log", title+"_width",
-				() -> 600 + "")), Integer.parseInt(Data.get("gui_log",
-						title+"_height", () -> 600 + "")));
-		setLocation(
-				Integer.parseInt(Data.get("gui_log", title+"_x", () -> 0 + "")),
-				Integer.parseInt(Data.get("gui_log", title+"_y", () -> 0 + "")));
+		setSize(Integer.parseInt(Data.get("gui_log", title + "_width", () -> 600 + "")),
+				Integer.parseInt(Data.get("gui_log", title + "_height", () -> 600 + "")));
+		setLocation(Integer.parseInt(Data.get("gui_log", title + "_x", () -> 0 + "")),
+				Integer.parseInt(Data.get("gui_log", title + "_y", () -> 0 + "")));
 		addComponentListener(new ComponentListener() {
 
 			@Override
@@ -35,14 +43,14 @@ public class XJFrame extends JFrame {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-				Data.set("gui_log", title+"_width", "" + getWidth());
-				Data.set("gui_log", title+"_height", "" + getHeight());
+				Data.set("gui_log", title + "_width", "" + getWidth());
+				Data.set("gui_log", title + "_height", "" + getHeight());
 			}
 
 			@Override
 			public void componentMoved(ComponentEvent e) {
-				Data.set("gui_log", title+"_x", "" + getX());
-				Data.set("gui_log", title+"_y", "" + getY());
+				Data.set("gui_log", title + "_x", "" + getX());
+				Data.set("gui_log", title + "_y", "" + getY());
 			}
 
 			@Override
@@ -50,5 +58,8 @@ public class XJFrame extends JFrame {
 			}
 		});
 	}
-	
+
+	public void setDisposeListener(Consumer<XJFrame> listener) {
+		disposeListener = listener;
+	}
 }
