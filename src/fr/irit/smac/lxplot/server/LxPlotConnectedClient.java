@@ -1,11 +1,11 @@
-package com.lxprl.plot.server;
+package fr.irit.smac.lxplot.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import com.lxprl.plot.commons.ChartType;
+import fr.irit.smac.lxplot.commons.ChartType;
 
 /**
  * Class handling the connection o a new client to the server.

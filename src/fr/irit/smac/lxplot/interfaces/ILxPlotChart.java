@@ -1,4 +1,4 @@
-package com.lxprl.plot.interfaces;
+package fr.irit.smac.lxplot.interfaces;
 
 /**
  * Common chart's interface between the server and the client.

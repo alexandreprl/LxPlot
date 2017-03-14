@@ -1,14 +1,14 @@
-package com.lxprl.plot;
-
-import com.lxprl.plot.commons.ChartType;
-import com.lxprl.plot.interfaces.ILxPlotChart;
-import com.lxprl.plot.interfaces.ILxPlotServer;
-import com.lxprl.plot.server.LxPlotDistantServer;
-import com.lxprl.plot.server.LxPlotServer;
+package fr.irit.smac.lxplot;
 
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
+
+import fr.irit.smac.lxplot.commons.ChartType;
+import fr.irit.smac.lxplot.interfaces.ILxPlotChart;
+import fr.irit.smac.lxplot.interfaces.ILxPlotServer;
+import fr.irit.smac.lxplot.server.LxPlotDistantServer;
+import fr.irit.smac.lxplot.server.LxPlotServer;
 
 /**
  * Main class giving access to all the functionnalities of the library

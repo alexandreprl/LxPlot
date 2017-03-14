@@ -1,4 +1,4 @@
-package com.lxprl.plot.example.local;
+package fr.irit.smac.lxplot.example.local;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -9,9 +9,9 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 
-import com.lxprl.plot.LxPlot;
-import com.lxprl.plot.commons.ChartType;
-import com.lxprl.plot.server.LxPlotChart;
+import fr.irit.smac.lxplot.LxPlot;
+import fr.irit.smac.lxplot.commons.ChartType;
+import fr.irit.smac.lxplot.server.LxPlotChart;
 
 /**
  * Example showing how to locally display charts.

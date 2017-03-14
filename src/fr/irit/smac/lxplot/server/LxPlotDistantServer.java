@@ -1,8 +1,4 @@
-package com.lxprl.plot.server;
-
-import com.lxprl.plot.commons.ChartType;
-import com.lxprl.plot.interfaces.ILxPlotChart;
-import com.lxprl.plot.interfaces.ILxPlotServer;
+package fr.irit.smac.lxplot.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,6 +7,10 @@ import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
+
+import fr.irit.smac.lxplot.commons.ChartType;
+import fr.irit.smac.lxplot.interfaces.ILxPlotChart;
+import fr.irit.smac.lxplot.interfaces.ILxPlotServer;
 
 /**
  * Representation of the server made by a client

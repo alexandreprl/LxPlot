@@ -1,7 +1,7 @@
-package com.lxprl.plot.example.network;
+package fr.irit.smac.lxplot.example.network;
 
-import com.lxprl.plot.LxPlot;
-import com.lxprl.plot.commons.ChartType;
+import fr.irit.smac.lxplot.LxPlot;
+import fr.irit.smac.lxplot.commons.ChartType;
 
 /**
  * Example showing the distant connection to the server.

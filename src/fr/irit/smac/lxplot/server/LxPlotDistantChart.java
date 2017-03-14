@@ -1,9 +1,9 @@
-package com.lxprl.plot.server;
+package fr.irit.smac.lxplot.server;
 
 import java.io.PrintWriter;
 
-import com.lxprl.plot.commons.ChartType;
-import com.lxprl.plot.interfaces.ILxPlotChart;
+import fr.irit.smac.lxplot.commons.ChartType;
+import fr.irit.smac.lxplot.interfaces.ILxPlotChart;
 
 /**
  * Representation of a distant chart made by a client.

@@ -1,9 +1,5 @@
-package com.lxprl.plot.server;
+package fr.irit.smac.lxplot.server;
 
-import com.lxprl.plot.commons.ChartType;
-import com.lxprl.plot.commons.XJFrame;
-import com.lxprl.plot.interfaces.ILxPlotChart;
-import com.lxprl.plot.interfaces.ILxPlotServer;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -14,6 +10,11 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
+import fr.irit.smac.lxplot.commons.ChartType;
+import fr.irit.smac.lxplot.commons.XJFrame;
+import fr.irit.smac.lxplot.interfaces.ILxPlotChart;
+import fr.irit.smac.lxplot.interfaces.ILxPlotServer;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

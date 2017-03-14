@@ -1,4 +1,4 @@
-package com.lxprl.plot.server;
+package fr.irit.smac.lxplot.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.lxprl.plot.commons.ChartType;
-import com.lxprl.plot.interfaces.ILxPlotChart;
-import com.lxprl.plot.interfaces.ILxPlotServer;
+import fr.irit.smac.lxplot.commons.ChartType;
+import fr.irit.smac.lxplot.interfaces.ILxPlotChart;
+import fr.irit.smac.lxplot.interfaces.ILxPlotServer;
 
 /**
  * Server which is able to receive requests from local or distant client.

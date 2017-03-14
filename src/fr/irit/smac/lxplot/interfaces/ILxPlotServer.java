@@ -1,6 +1,6 @@
-package com.lxprl.plot.interfaces;
+package fr.irit.smac.lxplot.interfaces;
 
-import com.lxprl.plot.commons.ChartType;
+import fr.irit.smac.lxplot.commons.ChartType;
 
 /**
  * Common server's interface between the server and the client.

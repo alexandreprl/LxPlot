@@ -1,4 +1,4 @@
-package com.lxprl.plot.commons;
+package fr.irit.smac.lxplot.commons;
 
 
 import java.io.*;

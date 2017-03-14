@@ -1,6 +1,6 @@
-package com.lxprl.plot.example.network;
+package fr.irit.smac.lxplot.example.network;
 
-import com.lxprl.plot.LxPlot;
+import fr.irit.smac.lxplot.LxPlot;
 
 /**
  * Example showing the creation of an instance of the server.

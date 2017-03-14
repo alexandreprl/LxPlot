@@ -1,4 +1,4 @@
-package com.lxprl.plot.server;
+package fr.irit.smac.lxplot.server;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

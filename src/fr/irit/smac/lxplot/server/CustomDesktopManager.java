@@ -1,4 +1,4 @@
-package com.lxprl.plot.server;
+package fr.irit.smac.lxplot.server;
 
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JInternalFrame;
