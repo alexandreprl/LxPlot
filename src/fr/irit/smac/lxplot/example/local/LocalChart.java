@@ -43,6 +43,8 @@ public class LocalChart {
 		// call
 		LxPlot.getChart("My chart").add(2, 3);
 		LxPlot.getChart("My chart").add(3, 3);
+		
+		//Override the value at x=3
 		LxPlot.getChart("My chart").add(3, 4);
 
 		// Access the JFreeChart object (only from the server side)
@@ -62,13 +64,13 @@ public class LocalChart {
 		LxPlot.getChart("Bar chart", ChartType.BAR);
 
 		// Add plots to the chart "Layer" for serie #0
-		LxPlot.getChart("Bar chart").add(1, 2);
-		LxPlot.getChart("Bar chart").add(2, 2.5);
-		LxPlot.getChart("Bar chart").add(2, 3);
+		LxPlot.getChart("Bar chart", ChartType.BAR).add(1, 2);
+		LxPlot.getChart("Bar chart", ChartType.BAR).add(2, 2.5);
+		LxPlot.getChart("Bar chart", ChartType.BAR).add(2, 3);
 		
 		//Dispose test
 		for (int i=0;i<1000;i++){
-			LxPlot.getChart("Bar chart").add(i, 3);
+			LxPlot.getChart("Bar chart", ChartType.BAR).add(i, 3);
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

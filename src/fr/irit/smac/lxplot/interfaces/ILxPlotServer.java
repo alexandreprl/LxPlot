@@ -33,4 +33,6 @@ public interface ILxPlotServer {
 	 */
 	public boolean getUniqueWindow();
 
+	public void removeChart(String name);
+
 }

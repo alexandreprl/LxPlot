@@ -18,7 +18,15 @@ import fr.irit.smac.lxplot.interfaces.ILxPlotServer;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
+
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +98,7 @@ public class LxPlotChart implements ILxPlotChart {
 					refreshLayout();
 					return t;
 				}
-
+				
 			};
 
 			LxPlotChart.desktopPane.setDesktopManager(new CustomDesktopManager());
@@ -103,8 +111,79 @@ public class LxPlotChart implements ILxPlotChart {
 		frameLock.lock();
 		if (LxPlotChart.frame == null) {
 			LxPlotChart.frame = new XJFrame("LxPlot");
-			LxPlotChart.frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+			LxPlotChart.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			LxPlotChart.frame.addWindowListener(new WindowListener() {
+				
+				@Override
+				public void windowOpened(WindowEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void windowIconified(WindowEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void windowDeiconified(WindowEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void windowDeactivated(WindowEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void windowClosing(WindowEvent e) {
+					
+				}
+				
+				@Override
+				public void windowClosed(WindowEvent e) {
+					// TODO Auto-generated method stub
 
+					JInternalFrame[] allFrames = getDesktopPane().getAllFrames();
+					for (JInternalFrame jInternalFrame : allFrames) {
+						jInternalFrame.doDefaultCloseAction();
+					}
+				}
+				
+				@Override
+				public void windowActivated(WindowEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			LxPlotChart.frame.addComponentListener(new ComponentListener() {
+				
+				@Override
+				public void componentShown(ComponentEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void componentResized(ComponentEvent e) {
+					refreshLayout();
+				}
+				
+				@Override
+				public void componentMoved(ComponentEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void componentHidden(ComponentEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 			LxPlotChart.frame.getContentPane().add((LxPlotChart.getDesktopPane()), BorderLayout.CENTER);
 			LxPlotChart.frame.getContentPane().add(getMenuBar(), BorderLayout.NORTH);
 			LxPlotChart.frame.pack();
@@ -253,6 +332,52 @@ public class LxPlotChart implements ILxPlotChart {
 		if (internalChartFrame == null) {
 			internalChartFrame = new JInternalFrame(name + " (" + (LxPlotChart.chartCount) + ")", true, true, true,
 					true);
+			internalChartFrame.addInternalFrameListener(new InternalFrameListener() {
+				
+				@Override
+				public void internalFrameOpened(InternalFrameEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void internalFrameIconified(InternalFrameEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void internalFrameDeiconified(InternalFrameEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void internalFrameDeactivated(InternalFrameEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void internalFrameClosing(InternalFrameEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void internalFrameClosed(InternalFrameEvent e) {
+					internalChartFrame = null;
+					chartPanel = null;
+					chart = null;
+					server.removeChart(name);
+				}
+				
+				@Override
+				public void internalFrameActivated(InternalFrameEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 			// final int wx = 900 / LxPlotChart.cols;
 			// final int wy = 600 / LxPlotChart.rows;
 			// internalChartFrame

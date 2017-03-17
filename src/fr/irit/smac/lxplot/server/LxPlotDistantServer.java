@@ -56,5 +56,9 @@ public class LxPlotDistantServer implements ILxPlotServer {
 		return charts.get(_name);
 	}
 
+	@Override
+	public void removeChart(String name) {
+		charts.remove(name);
+	}
 
 }
