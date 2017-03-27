@@ -276,7 +276,7 @@ public class LxPlotChart implements ILxPlotChart {
 	}
 
 	@Override
-	public void add(final double _x, final double _y) {
+	public synchronized void add(final double _x, final double _y) {
 		if (firstSerie == null) {
 			firstSerie = "Default";
 		}
@@ -284,7 +284,7 @@ public class LxPlotChart implements ILxPlotChart {
 	}
 
 	@Override
-	public void add(final String _serieName, final double _x, final double _y) {
+	public synchronized void add(final String _serieName, final double _x, final double _y) {
 		switch (chartType) {
 		case PLOT:
 			getSeries(_serieName).add(_x, _y);

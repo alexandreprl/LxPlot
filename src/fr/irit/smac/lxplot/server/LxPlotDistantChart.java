@@ -25,12 +25,12 @@ public class LxPlotDistantChart implements ILxPlotChart {
 	}
 
 	@Override
-	public void add(final double _x, final double _y) {
+	public synchronized void add(final double _x, final double _y) {
 		add("", _x, _y);
 	}
 
 	@Override
-	public void add(final String _serieName, final double _x, final double _y) {
+	public synchronized void add(final String _serieName, final double _x, final double _y) {
 		out.println("add;" + name + ";" + _serieName + ";" + _x + ";" + _y);
 		out.flush();
 	}
