@@ -467,7 +467,7 @@ public class LxPlotChart implements ILxPlotChart {
 		return chart;
 	}
 
-	private DefaultCategoryDataset getCategoryDataset() {
+	private synchronized DefaultCategoryDataset getCategoryDataset() {
 		if (categoryDataset == null)
 			categoryDataset = new DefaultCategoryDataset();
 		return categoryDataset;
