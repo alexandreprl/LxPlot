@@ -76,14 +76,20 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 
 	@Override
 	public ILxPlotChart getChart(String _name, ChartType _chartType) {
+		return getChart(_name, _chartType, true);
+	}
+
+	@Override
+	public ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking) {
 		if (!charts.containsKey(_name)) {
-			charts.put(_name, new LxPlotChart(_name, _chartType, this));
+			charts.put(_name, new LxPlotChart(_name, _chartType, this, _blocking));
 		}
 		return charts.get(_name);
 	}
 
 	@Override
 	public void removeChart(String name) {
+		
 		charts.remove(name);
 	}
 

@@ -25,6 +25,16 @@ public interface ILxPlotServer {
 	 * @return
 	 */
 	public ILxPlotChart getChart(String _name, ChartType _chartType);
+	
+	/**
+	 * Get or create the chart which is called _name and set the chart type and the blocking state
+	 *
+	 * @param _name
+	 * @param _chartType
+	 * @param _blocking
+	 * @return
+	 */
+	public ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking);
 
 	/**
 	 * Get whether charts must be in different windows or not

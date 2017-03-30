@@ -1,51 +1,59 @@
 package fr.irit.smac.lxplot.server;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.beans.PropertyVetoException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
+
+import javax.swing.BorderFactory;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import fr.irit.smac.lxplot.commons.ChartType;
-import fr.irit.smac.lxplot.commons.XJFrame;
 import fr.irit.smac.lxplot.interfaces.ILxPlotChart;
 import fr.irit.smac.lxplot.interfaces.ILxPlotServer;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
-
-import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Real chart displayed by a server.
  *
  * @author Alexandre Perles
  */
-public class LxPlotChart implements ILxPlotChart {
-	public static int cols = 1;
+public class LxPlotChart implements ILxPlotChart, Runnable {
+	public static int cols = 2;
 	protected static int untitledCount = 1;
 	private static JMenuBar menuBar;
 	private static JMenu layoutMenu;
-	private static XJFrame frame;
+	private static MainWindow window;
 	private static int chartCount = 0;
-	private static String frameName;
 	private static JDesktopPane desktopPane;
 	private static ReentrantLock frameLock = new ReentrantLock();
 	private final Map<String, XYSeries> series = new TreeMap<String, XYSeries>();
@@ -53,7 +61,6 @@ public class LxPlotChart implements ILxPlotChart {
 	private final ILxPlotServer server;
 	// private JPanel chartContainer;
 	private XYSeriesCollection dataset;
-	private int seriesCount = 0;
 	private JFreeChart chart;
 	private TitledBorder border;
 	private ChartType chartType = ChartType.PLOT;
@@ -62,25 +69,34 @@ public class LxPlotChart implements ILxPlotChart {
 	// private JFrame chartFrame;
 	private JInternalFrame internalChartFrame;
 	private DefaultCategoryDataset categoryDataset;
+	private LinkedList<PointRequest> queue = new LinkedList<>();
+	private Semaphore threadSemaphore = new Semaphore(-1);
+
+	private PointRequest lastPoint;
+	private ReentrantLock queueLock = new ReentrantLock();
+	private boolean blocking;
 
 	public LxPlotChart(final ILxPlotServer _server) {
 		this("Untitled " + (LxPlotChart.untitledCount++), _server);
 	}
 
-	public LxPlotChart(final String _name, final ChartType _chartType, final ILxPlotServer _server) {
+	public LxPlotChart(final String _name, final ChartType _chartType, final ILxPlotServer _server, final boolean _blocking) {
 		name = _name;
 		chartType = _chartType;
 		server = _server;
+		blocking = _blocking;
 		LxPlotChart.chartCount++;
 		// getChartContainer(true).add(getChartPanel());
-		LxPlotChart.getJFrame();
+		LxPlotChart.getMainWindow();
 		LxPlotChart.getDesktopPane().add(getChartInternalFrame());
 		// getChartContainer().revalidate();
 		// getChartContainer().repaint();
+
+		new Thread(this).start();
 	}
 
 	public LxPlotChart(final String _name, final ILxPlotServer _server) {
-		this(_name, ChartType.LINE, _server);
+		this(_name, ChartType.LINE, _server, true);
 	}
 
 	private synchronized static JDesktopPane getDesktopPane() {
@@ -98,7 +114,7 @@ public class LxPlotChart implements ILxPlotChart {
 					refreshLayout();
 					return t;
 				}
-				
+
 			};
 
 			LxPlotChart.desktopPane.setDesktopManager(new CustomDesktopManager());
@@ -107,111 +123,79 @@ public class LxPlotChart implements ILxPlotChart {
 		return LxPlotChart.desktopPane;
 	}
 
-	private synchronized static XJFrame getJFrame() {
+	private synchronized static MainWindow getMainWindow() {
 		frameLock.lock();
-		if (LxPlotChart.frame == null) {
-			LxPlotChart.frame = new XJFrame("LxPlot");
-			LxPlotChart.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			LxPlotChart.frame.addWindowListener(new WindowListener() {
-				
+		if (LxPlotChart.window == null) {
+			LxPlotChart.window = new MainWindow("LxPlot");
+			LxPlotChart.window.getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			LxPlotChart.window.getFrame().addWindowListener(new WindowListener() {
+
 				@Override
 				public void windowOpened(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void windowIconified(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void windowDeiconified(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void windowDeactivated(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void windowClosing(WindowEvent e) {
-					
+
 				}
-				
+
 				@Override
 				public void windowClosed(WindowEvent e) {
-					// TODO Auto-generated method stub
-
 					JInternalFrame[] allFrames = getDesktopPane().getAllFrames();
 					for (JInternalFrame jInternalFrame : allFrames) {
 						jInternalFrame.doDefaultCloseAction();
 					}
 				}
-				
+
 				@Override
 				public void windowActivated(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
 			});
-			LxPlotChart.frame.addComponentListener(new ComponentListener() {
-				
+			LxPlotChart.window.getFrame().addComponentListener(new ComponentListener() {
+
 				@Override
 				public void componentShown(ComponentEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void componentResized(ComponentEvent e) {
 					refreshLayout();
 				}
-				
+
 				@Override
 				public void componentMoved(ComponentEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void componentHidden(ComponentEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
 			});
-			LxPlotChart.frame.getContentPane().add((LxPlotChart.getDesktopPane()), BorderLayout.CENTER);
-			LxPlotChart.frame.getContentPane().add(getMenuBar(), BorderLayout.NORTH);
-			LxPlotChart.frame.pack();
-			LxPlotChart.frame.setVisible(true);
+			LxPlotChart.window.getFrame().getContentPane().add((LxPlotChart.getDesktopPane()), BorderLayout.CENTER);
+			LxPlotChart.window.getFrame().pack();
+			LxPlotChart.window.getFrame().setVisible(true);
 		}
 		frameLock.unlock();
-		return LxPlotChart.frame;
-	}
-
-	private synchronized static JMenuBar getMenuBar() {
-		if (menuBar == null) {
-			menuBar = new JMenuBar();
-			menuBar.add(getLayoutMenu());
-		}
-		return menuBar;
-	}
-
-	private synchronized static JMenu getLayoutMenu() {
-		if (layoutMenu == null) {
-			layoutMenu = new JMenu("Layout");
-			JMenuItem apply = new JMenuItem("Apply");
-			apply.addActionListener(l -> refreshLayout());
-			layoutMenu.add(apply);
-			JMenuItem config = new JMenuItem("Configure ...");
-			config.addActionListener(l -> new ConfigWindow());
-			layoutMenu.add(config);
-		}
-		return layoutMenu;
+		return LxPlotChart.window;
 	}
 
 	// private JFrame getFrame() {
@@ -261,18 +245,14 @@ public class LxPlotChart implements ILxPlotChart {
 		}
 		if (width < 10)
 			width = 10;
-		if (height < 80)
-			height = 80;
+		if (height < 200)
+			height = 200;
 
 		for (JInternalFrame frame : visibleFrames) {
 			frame.setLocation(width * (x % cols), height * ((int) (x / cols)));
 			frame.setSize(width, height);
 			x++;
 		}
-	}
-
-	public static void setFrameName(final String _name) {
-		LxPlotChart.frameName = _name;
 	}
 
 	@Override
@@ -285,19 +265,16 @@ public class LxPlotChart implements ILxPlotChart {
 
 	@Override
 	public synchronized void add(final String _serieName, final double _x, final double _y) {
-		switch (chartType) {
-		case PLOT:
-			getSeries(_serieName).add(_x, _y);
-			break;
-		case LINE:
-			getSeries(_serieName).addOrUpdate(_x, _y);
-			break;
-		case BAR:
-			getCategoryDataset().addValue(_y, _serieName, String.valueOf(_x));
-			break;
+		lastPoint = new PointRequest(_serieName, _x, _y);
+
+		if (blocking)
+			drawPoint(lastPoint);
+		else {
+			queueLock.lock();
+			queue.add(lastPoint);
+			threadSemaphore.release();
+			queueLock.unlock();
 		}
-		if (!getJFrame().isVisible())
-			getJFrame().setVisible(true);
 	}
 
 	@Override
@@ -333,49 +310,44 @@ public class LxPlotChart implements ILxPlotChart {
 			internalChartFrame = new JInternalFrame(name + " (" + (LxPlotChart.chartCount) + ")", true, true, true,
 					true);
 			internalChartFrame.addInternalFrameListener(new InternalFrameListener() {
-				
+
 				@Override
 				public void internalFrameOpened(InternalFrameEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void internalFrameIconified(InternalFrameEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void internalFrameDeiconified(InternalFrameEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void internalFrameDeactivated(InternalFrameEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void internalFrameClosing(InternalFrameEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				@Override
 				public void internalFrameClosed(InternalFrameEvent e) {
+
 					internalChartFrame = null;
 					chartPanel = null;
 					chart = null;
 					server.removeChart(name);
 				}
-				
+
 				@Override
 				public void internalFrameActivated(InternalFrameEvent e) {
-					// TODO Auto-generated method stub
-					
+
 				}
 			});
 			// final int wx = 900 / LxPlotChart.cols;
@@ -437,6 +409,7 @@ public class LxPlotChart implements ILxPlotChart {
 				range.setAutoRangeIncludesZero(false);
 				plot.setBackgroundPaint(Color.white);
 				plot.setRangeGridlinePaint(Color.black);
+				// plot.setRenderer(new SamplingXYLineRenderer());
 				break;
 			case PLOT:
 				chart = ChartFactory.createScatterPlot("", // chart
@@ -482,10 +455,70 @@ public class LxPlotChart implements ILxPlotChart {
 
 			series.put(_serieName, xySeries);
 			getDataset().addSeries(xySeries);
-			// ((XYPlot)(getChart().getPlot())).getRenderer().setSeriesStroke(seriesCount,
-			// new BasicStroke(3f));
-			seriesCount++;
 		}
 		return series.get(_serieName);
+	}
+
+	private class PointRequest {
+		public final String serieName;
+		public final double x, y;
+
+		public PointRequest(String serieName, double x, double y) {
+			super();
+			this.serieName = serieName;
+			this.x = x;
+			this.y = y;
+		}
+
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				PointRequest point;
+				getMainWindow().setStatus("READY");
+				threadSemaphore.acquire();
+				getMainWindow().setStatus("WORKING ...");
+				queueLock.lock();
+				point = queue.removeFirst();
+				queueLock.unlock();
+				drawPoint(point);
+
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void drawPoint(PointRequest _pointRequest) {
+		switch (chartType) {
+		case PLOT:
+			getSeries(_pointRequest.serieName).add(_pointRequest.x, _pointRequest.y);
+			break;
+		case LINE:
+			getSeries(_pointRequest.serieName).addOrUpdate(_pointRequest.x, _pointRequest.y);
+			break;
+		case BAR:
+			getCategoryDataset().addValue(_pointRequest.y, _pointRequest.serieName, String.valueOf(_pointRequest.x));
+			break;
+		}
+		if (!getMainWindow().getFrame().isVisible())
+			getMainWindow().getFrame().setVisible(true);
+
+	}
+
+	public static void minimizeAll() {
+		for (JInternalFrame jif : desktopPane.getAllFrames()) {
+			try {
+				jif.setIcon(true);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void setFrameName(String _name) {
+		getMainWindow().setFrameName(_name);
 	}
 }

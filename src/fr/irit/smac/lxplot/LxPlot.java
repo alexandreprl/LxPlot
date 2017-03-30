@@ -82,6 +82,15 @@ public class LxPlot {
 	public static ILxPlotChart getChart(final String _name, final ChartType _chartType) {
 		return LxPlot.getServer().getChart(_name, _chartType);
 	}
+	/**
+	 * Get the chart with the given name if any. Otherwise, create it.
+	 *
+	 * @param _name
+	 * @return
+	 */
+	public static ILxPlotChart getChart(final String _name, final ChartType _chartType, final boolean _blocking) {
+		return LxPlot.getServer().getChart(_name, _chartType, _blocking);
+	}
 
 	/**
 	 * Get default server if any. Otherwise create it.
