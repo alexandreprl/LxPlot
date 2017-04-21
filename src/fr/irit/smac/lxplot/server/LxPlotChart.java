@@ -126,7 +126,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	private synchronized static MainWindow getMainWindow() {
 		frameLock.lock();
 		if (LxPlotChart.window == null) {
-			LxPlotChart.window = new MainWindow("LxPlot v1");
+			LxPlotChart.window = new MainWindow("LxPlot");
 			LxPlotChart.window.getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			LxPlotChart.window.getFrame().addWindowListener(new WindowListener() {
 
