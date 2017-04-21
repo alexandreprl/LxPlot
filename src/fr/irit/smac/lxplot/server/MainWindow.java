@@ -4,34 +4,28 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import fr.irit.smac.lxplot.Constants;
+import fr.irit.smac.lxplot.commons.Data;
 import fr.irit.smac.lxplot.commons.XJFrame;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JMenu;
-import javax.swing.Box;
-import javax.swing.SpringLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import javax.swing.border.BevelBorder;
 import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 
 public class MainWindow {
 
@@ -52,7 +46,6 @@ public class MainWindow {
 	private JButton btnNewButton_3;
 	private JPanel panel_3;
 	private JLabel lblNewLabel;
-	private JPanel panel_4;
 	private JButton btnNewButton_4;
 	private JButton btnForceQuit;
 	private Component horizontalStrut;
@@ -116,51 +109,36 @@ public class MainWindow {
 				System.exit(0);
 			}
 		});
-		panel.add(btnForceQuit);
-		
-		panel_4 = new JPanel();
-		frame.getContentPane().add(panel_4, BorderLayout.WEST);
-		GridBagLayout gbl_panel_4 = new GridBagLayout();
-		gbl_panel_4.columnWidths = new int[] {0, 1};
-		gbl_panel_4.rowHeights = new int[]{0, 0, 0};
-		gbl_panel_4.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gbl_panel_4.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		panel_4.setLayout(gbl_panel_4);
-		
-		btnNewButton_4 = new JButton("Minimize all");
-		btnNewButton_4.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				LxPlotChart.minimizeAll();
-			}
-		});
-		GridBagConstraints gbc_btnNewButton_4 = new GridBagConstraints();
-		gbc_btnNewButton_4.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_4.gridx = 0;
-		gbc_btnNewButton_4.gridy = 0;
-		panel_4.add(btnNewButton_4, gbc_btnNewButton_4);
 		
 		panel_6 = new JPanel();
-		GridBagConstraints gbc_panel_6 = new GridBagConstraints();
-		gbc_panel_6.fill = GridBagConstraints.BOTH;
-		gbc_panel_6.gridx = 0;
-		gbc_panel_6.gridy = 1;
-		panel_4.add(panel_6, gbc_panel_6);
+		panel.add(panel_6);
 		panel_6.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		lblNewLabel_2 = new JLabel("Columns");
 		panel_6.add(lblNewLabel_2);
 		
-		spinner_1 = new JSpinner();
+		spinner_1 = new JSpinner(new SpinnerNumberModel(Integer.parseInt(Data.get("lxplot", "cols", ()->"1")), 1, 100, 1));
 		spinner_1.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = (int) spinner_1.getValue();
-				if (value < 1)
-					value = 1;
+				Data.set("lxplot", "cols", String.valueOf(value));
 				LxPlotChart.cols = value;
 				LxPlotChart.refreshLayout();
 			}
 		});
+		int value = (int) spinner_1.getValue();
+		LxPlotChart.cols = value;
+		LxPlotChart.refreshLayout();
 		panel_6.add(spinner_1);
+		
+		btnNewButton_4 = new JButton("Minimize all");
+		panel.add(btnNewButton_4);
+		btnNewButton_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LxPlotChart.minimizeAll();
+			}
+		});
+		panel.add(btnForceQuit);
 	}
 
 	public JFrame getFrame() {

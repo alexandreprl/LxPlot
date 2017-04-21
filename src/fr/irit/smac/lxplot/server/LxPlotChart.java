@@ -49,7 +49,6 @@ import fr.irit.smac.lxplot.interfaces.ILxPlotServer;
  */
 public class LxPlotChart implements ILxPlotChart, Runnable {
 	public static int cols = 2;
-	protected static int untitledCount = 1;
 	private static JMenuBar menuBar;
 	private static JMenu layoutMenu;
 	private static MainWindow window;
@@ -77,7 +76,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	private boolean blocking;
 
 	public LxPlotChart(final ILxPlotServer _server) {
-		this("Untitled " + (LxPlotChart.untitledCount++), _server);
+		this("Untitled", _server);
 	}
 
 	public LxPlotChart(final String _name, final ChartType _chartType, final ILxPlotServer _server, final boolean _blocking) {
@@ -87,7 +86,6 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		blocking = _blocking;
 		LxPlotChart.chartCount++;
 		// getChartContainer(true).add(getChartPanel());
-		LxPlotChart.getMainWindow();
 		LxPlotChart.getDesktopPane().add(getChartInternalFrame());
 		// getChartContainer().revalidate();
 		// getChartContainer().repaint();
@@ -307,7 +305,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	// }
 	private synchronized JInternalFrame getChartInternalFrame() {
 		if (internalChartFrame == null) {
-			internalChartFrame = new JInternalFrame(name + " (" + (LxPlotChart.chartCount) + ") "+(!blocking?"ASYNC":""), true, true, true,
+			internalChartFrame = new JInternalFrame(getInternalFrameName(), true, true, true,
 					true);
 			internalChartFrame.addInternalFrameListener(new InternalFrameListener() {
 
@@ -364,6 +362,10 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			internalChartFrame.setVisible(true);
 		}
 		return internalChartFrame;
+	}
+
+	private String getInternalFrameName() {
+		return name + " (" + (LxPlotChart.chartCount) + ") "+(!blocking?"ASYNC":"");
 	}
 
 	private synchronized ChartPanel getChartPanel() {
