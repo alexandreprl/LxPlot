@@ -126,7 +126,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	private synchronized static MainWindow getMainWindow() {
 		frameLock.lock();
 		if (LxPlotChart.window == null) {
-			LxPlotChart.window = new MainWindow("LxPlot");
+			LxPlotChart.window = new MainWindow("LxPlot v1");
 			LxPlotChart.window.getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			LxPlotChart.window.getFrame().addWindowListener(new WindowListener() {
 
@@ -307,7 +307,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	// }
 	private synchronized JInternalFrame getChartInternalFrame() {
 		if (internalChartFrame == null) {
-			internalChartFrame = new JInternalFrame(name + " (" + (LxPlotChart.chartCount) + ")", true, true, true,
+			internalChartFrame = new JInternalFrame(name + " (" + (LxPlotChart.chartCount) + ") "+(!blocking?"ASYNC":""), true, true, true,
 					true);
 			internalChartFrame.addInternalFrameListener(new InternalFrameListener() {
 
