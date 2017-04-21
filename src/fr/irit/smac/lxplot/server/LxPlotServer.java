@@ -80,7 +80,7 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 	}
 
 	@Override
-	public ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking) {
+	public synchronized ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking) {
 		if (!charts.containsKey(_name)) {
 			charts.put(_name, new LxPlotChart(_name, _chartType, this, _blocking));
 		}

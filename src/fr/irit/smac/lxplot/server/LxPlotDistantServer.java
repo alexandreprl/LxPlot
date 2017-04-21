@@ -52,7 +52,7 @@ public class LxPlotDistantServer implements ILxPlotServer {
 		return getChart(_name,_chartType, false);
 	}
 	@Override
-	public ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking) {
+	public synchronized ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking) {
 		if (!charts.containsKey(_name)) {
 			charts.put(_name,
 					new LxPlotDistantChart(_name, _chartType, out));
