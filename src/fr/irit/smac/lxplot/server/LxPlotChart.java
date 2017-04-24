@@ -114,7 +114,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 				}
 
 			};
-
+			
 			LxPlotChart.desktopPane.setDesktopManager(new CustomDesktopManager());
 			LxPlotChart.desktopPane.setPreferredSize(new Dimension(900, 600));
 		}
@@ -226,7 +226,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		}
 
 		int w = getDesktopPane().getWidth();
-		int h = getDesktopPane().getHeight() - 30;
+		int h = getDesktopPane().getHeight() - (visibleFrames.size()!=allFrames.length?30:0);
 
 		if (visibleFrames.isEmpty())
 			return;
@@ -372,8 +372,8 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		// we put the chart into a panel
 		if (chartPanel == null) {
 			chartPanel = new ChartPanel(getJFreeChart());
-			border = BorderFactory.createTitledBorder(name);
-			chartPanel.setBorder(border);
+//			border = BorderFactory.createTitledBorder(name);
+//			chartPanel.setBorder(border);
 			chartPanel.setMinimumSize(new Dimension(10, 10));
 			// default size
 			// chartPanel.setPreferredSize(new Dimension(300, 300));

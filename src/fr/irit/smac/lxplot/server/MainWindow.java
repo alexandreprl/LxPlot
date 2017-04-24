@@ -90,18 +90,15 @@ public class MainWindow {
 		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		frame.getContentPane().add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		
+				lblNewLabel_1 = new JLabel("lx-plot v" + Constants.VERSION);
+				panel.add(lblNewLabel_1);
+				
+				horizontalStrut = Box.createHorizontalStrut(20);
+				panel.add(horizontalStrut);
 
 		status = new JLabel("Status");
 		panel.add(status);
-
-		horizontalGlue = Box.createHorizontalGlue();
-		panel.add(horizontalGlue);
-
-		lblNewLabel_1 = new JLabel("lx-plot v" + Constants.VERSION);
-		panel.add(lblNewLabel_1);
-		
-		horizontalStrut = Box.createHorizontalStrut(20);
-		panel.add(horizontalStrut);
 		
 		btnForceQuit = new JButton("Force quit");
 		btnForceQuit.addActionListener(new ActionListener() {
@@ -110,9 +107,12 @@ public class MainWindow {
 			}
 		});
 		
+				horizontalGlue = Box.createHorizontalGlue();
+				panel.add(horizontalGlue);
+		
 		panel_6 = new JPanel();
 		panel.add(panel_6);
-		panel_6.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		panel_6.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		
 		lblNewLabel_2 = new JLabel("Columns");
 		panel_6.add(lblNewLabel_2);
