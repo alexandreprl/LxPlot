@@ -6,6 +6,12 @@ import java.util.function.Consumer;
 
 import javax.swing.JFrame;
 
+/**
+ * Extension of JFrame aiming at storing position and size of windows
+ * 
+ * @author Alexandre Perles
+ *
+ */
 public class XJFrame extends JFrame {
 
 	/**

@@ -19,7 +19,7 @@
 	</target>
 
 	<target name="build-javadoc">
-		<javadoc packagenames="com.lxprl.*" sourcepath="${src.dir}"
+		<javadoc packagenames="fr.irit.smac.lxplot.*" sourcepath="${src.dir}"
 			overview="${src.dir}/overview.html" destdir="${javadoc.dir}" version="true" 
 			windowtitle="${name}">
 			<arg value="-notimestamp" />

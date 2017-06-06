@@ -1,6 +1,5 @@
 package fr.irit.smac.lxplot.commons;
 
-
 import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,6 +8,13 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This class comes with the Data class and is here to help the storage of non
+ * sensitive data on the disk
+ * 
+ * @author Alexandre Perles
+ *
+ */
 public class DataStore {
 
 	private final String dir = "cache/";
@@ -18,7 +24,7 @@ public class DataStore {
 	private Map<String, String> cache = new LinkedHashMap<String, String>();
 
 	public DataStore(String _name) {
-		this.filename = dir+_name + ".dat";
+		this.filename = dir + _name + ".dat";
 	}
 
 	public String get(String _name, Supplier<String> supplierFunction) {
@@ -76,8 +82,7 @@ public class DataStore {
 
 	private void reload() {
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					new FileInputStream(getFile())));
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(getFile())));
 			Pattern p = Pattern.compile("^([^=]+)=(.*)$");
 
 			String line;
@@ -91,7 +96,7 @@ public class DataStore {
 			need_reload = false;
 			br.close();
 		} catch (IOException e) {
-			
+
 			e.printStackTrace();
 		}
 	}

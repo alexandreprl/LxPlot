@@ -9,6 +9,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -74,16 +75,18 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	private PointRequest lastPoint;
 	private ReentrantLock queueLock = new ReentrantLock();
 	private boolean blocking;
+	private int maxItemCount = -1;
 
 	public LxPlotChart(final ILxPlotServer _server) {
 		this("Untitled", _server);
 	}
 
-	public LxPlotChart(final String _name, final ChartType _chartType, final ILxPlotServer _server, final boolean _blocking) {
+	public LxPlotChart(final String _name, final ChartType _chartType, final ILxPlotServer _server, final boolean _blocking, final int _maxItemCount) {
 		name = _name;
 		chartType = _chartType;
 		server = _server;
 		blocking = _blocking;
+		maxItemCount = _maxItemCount;
 		LxPlotChart.chartCount++;
 		// getChartContainer(true).add(getChartPanel());
 		LxPlotChart.getDesktopPane().add(getChartInternalFrame());
@@ -94,7 +97,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	}
 
 	public LxPlotChart(final String _name, final ILxPlotServer _server) {
-		this(_name, ChartType.LINE, _server, true);
+		this(_name, ChartType.LINE, _server, true, -1);
 	}
 
 	private synchronized static JDesktopPane getDesktopPane() {
@@ -396,8 +399,8 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			case LINE:
 				chart = ChartFactory.createXYLineChart("", // chart
 						// title
-						"X", // x axis label
-						"Y", // y axis label
+						"", // x axis label
+						"", // y axis label
 						getDataset(), // data
 						PlotOrientation.VERTICAL, true, // include legend
 						true, // tooltips
@@ -416,8 +419,8 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			case PLOT:
 				chart = ChartFactory.createScatterPlot("", // chart
 						// title
-						"X", // x axis label
-						"Y", // y axis label
+						"", // x axis label
+						"", // y axis label
 						getDataset(), // data
 						PlotOrientation.VERTICAL, true, // include legend
 						true, // tooltips
@@ -433,7 +436,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 				plot.setRangeGridlinePaint(Color.black);
 				break;
 			case BAR:
-				chart = ChartFactory.createBarChart("", "X", "Y", getCategoryDataset(), PlotOrientation.VERTICAL, true,
+				chart = ChartFactory.createBarChart("", "", "", getCategoryDataset(), PlotOrientation.VERTICAL, true,
 						true, false);
 				break;
 
@@ -454,7 +457,8 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		}
 		if (!series.containsKey(_serieName)) {
 			final XYSeries xySeries = new XYSeries(_serieName, true, (chartType == ChartType.PLOT));
-
+			if (maxItemCount >0)
+				xySeries.setMaximumItemCount(maxItemCount);
 			series.put(_serieName, xySeries);
 			getDataset().addSeries(xySeries);
 		}

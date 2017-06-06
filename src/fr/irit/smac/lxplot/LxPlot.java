@@ -71,7 +71,7 @@ public class LxPlot {
 	 * @return
 	 */
 	public static ILxPlotChart getChart(final String _name) {
-		return LxPlot.getServer().getChart(_name);
+		return getChart(_name, ChartType.LINE);
 	}
 	/**
 	 * Get the chart with the given name if any. Otherwise, create it.
@@ -80,7 +80,7 @@ public class LxPlot {
 	 * @return
 	 */
 	public static ILxPlotChart getChart(final String _name, final ChartType _chartType) {
-		return LxPlot.getServer().getChart(_name, _chartType);
+		return getChart(_name, _chartType, true, -1);
 	}
 	/**
 	 * Get the chart with the given name if any. Otherwise, create it.
@@ -89,7 +89,25 @@ public class LxPlot {
 	 * @return
 	 */
 	public static ILxPlotChart getChart(final String _name, final ChartType _chartType, final boolean _blocking) {
-		return LxPlot.getServer().getChart(_name, _chartType, _blocking);
+		return getChart(_name, _chartType, _blocking, -1);
+	}
+	/**
+	 * Get the chart with the given name if any. Otherwise, create it.
+	 *
+	 * @param _name
+	 * @return
+	 */
+	public static ILxPlotChart getChart(final String _name, final ChartType _chartType, final int _maxItemCount) {
+		return LxPlot.getServer().getChart(_name, _chartType, true, _maxItemCount);
+	}
+	/**
+	 * Get the chart with the given name if any. Otherwise, create it.
+	 *
+	 * @param _name
+	 * @return
+	 */
+	public static ILxPlotChart getChart(final String _name, final ChartType _chartType, final boolean _blocking, final int _maxItemCount) {
+		return LxPlot.getServer().getChart(_name, _chartType, _blocking, _maxItemCount);
 	}
 
 	/**

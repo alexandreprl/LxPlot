@@ -10,31 +10,19 @@ import fr.irit.smac.lxplot.commons.ChartType;
  */
 public interface ILxPlotServer {
 	/**
-	 * Get or create the chart which is called _name.
-	 *
-	 * @param _name
-	 * @return
-	 */
-	public ILxPlotChart getChart(String _name);
-
-	/**
-	 * Get or create the chart which is called _name and set the chart type
-	 *
-	 * @param _name
-	 * @param _chartType
-	 * @return
-	 */
-	public ILxPlotChart getChart(String _name, ChartType _chartType);
-	
-	/**
 	 * Get or create the chart which is called _name and set the chart type and the blocking state
 	 *
 	 * @param _name
 	 * @param _chartType
 	 * @param _blocking
+	 * @param _maxItemCount 
 	 * @return
 	 */
+	public ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking, final int _maxItemCount);
 	public ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking);
+	public ILxPlotChart getChart(String _name, ChartType _chartType, final int _maxItemCount);
+	public ILxPlotChart getChart(String _name, ChartType _chartType);
+	public ILxPlotChart getChart(String _name);
 
 	/**
 	 * Get whether charts must be in different windows or not

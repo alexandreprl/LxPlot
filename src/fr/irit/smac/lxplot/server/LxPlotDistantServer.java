@@ -38,24 +38,15 @@ public class LxPlotDistantServer implements ILxPlotServer {
 	}
 
 	@Override
-	public synchronized ILxPlotChart getChart(final String _name) {
-		return getChart(_name, ChartType.LINE);
-	}
-
-	@Override
 	public boolean getUniqueWindow() {
 		return uniqueWindow;
 	}
 
 	@Override
-	public ILxPlotChart getChart(String _name, ChartType _chartType) {
-		return getChart(_name,_chartType, false);
-	}
-	@Override
-	public synchronized ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking) {
+	public synchronized ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking, final int _maxItemCount) {
 		if (!charts.containsKey(_name)) {
 			charts.put(_name,
-					new LxPlotDistantChart(_name, _chartType, out));
+					new LxPlotDistantChart(_name, _chartType, _maxItemCount, out));
 		}
 		return charts.get(_name);
 	}
@@ -65,4 +56,23 @@ public class LxPlotDistantServer implements ILxPlotServer {
 		charts.remove(name);
 	}
 
+	@Override
+	public synchronized ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking) {
+		return getChart(_name, _chartType, _blocking, -1);
+	}
+
+	@Override
+	public synchronized ILxPlotChart getChart(String _name, ChartType _chartType, int _maxItemCount) {
+		return getChart(_name, _chartType, true, _maxItemCount);
+	}
+
+	@Override
+	public synchronized ILxPlotChart getChart(String _name, ChartType _chartType) {
+		return getChart(_name, _chartType, true, -1);
+	}
+
+	@Override
+	public synchronized ILxPlotChart getChart(String _name) {
+		return getChart(_name, ChartType.LINE, true, -1);
+	}
 }

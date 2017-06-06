@@ -16,11 +16,11 @@ public class LxPlotDistantChart implements ILxPlotChart {
 	private final String name;
 	private final PrintWriter out;
 
-	public LxPlotDistantChart(final String _name, final ChartType _chartType,
+	public LxPlotDistantChart(final String _name, final ChartType _chartType, final int _maximumItemCount,
 			final PrintWriter _out) {
 		name = _name;
 		out = _out;
-		out.println("config;" + _name + ";" + _chartType.toString());
+		out.println("config;" + _name + ";" + _chartType.toString()+";"+_maximumItemCount);
 		out.flush();
 	}
 

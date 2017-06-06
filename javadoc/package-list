@@ -1,6 +1,6 @@
-com.lxprl.plot
-com.lxprl.plot.commons
-com.lxprl.plot.example.local
-com.lxprl.plot.example.network
-com.lxprl.plot.interfaces
-com.lxprl.plot.server
+fr.irit.smac.lxplot
+fr.irit.smac.lxplot.commons
+fr.irit.smac.lxplot.example.local
+fr.irit.smac.lxplot.example.network
+fr.irit.smac.lxplot.interfaces
+fr.irit.smac.lxplot.server

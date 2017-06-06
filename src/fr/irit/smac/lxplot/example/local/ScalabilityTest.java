@@ -8,12 +8,11 @@ public class ScalabilityTest {
 	public static void main(String[] args) {
 		long time = System.currentTimeMillis();
 		for (int i = 0; i < 20000; i++) {
-			LxPlot.getChart("test", ChartType.LINE, false).add(i, Math.sin(i/100.0));
+			LxPlot.getChart("test", ChartType.LINE, false,1000).add(i, Math.sin(i/100.0));
 			try {
-				if (i % 1000 == 0)
-					Thread.sleep(0);
+				if (i % 100 == 0)
+					Thread.sleep(100);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
