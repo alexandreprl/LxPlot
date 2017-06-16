@@ -35,6 +35,9 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.SamplingXYLineRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -77,6 +80,9 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	private boolean blocking;
 	private int maxItemCount = -1;
 
+	private List<Double> datasX;
+	private List<Double> datasY;
+
 	public LxPlotChart(final ILxPlotServer _server) {
 		this("Untitled", _server);
 	}
@@ -87,6 +93,8 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		server = _server;
 		blocking = _blocking;
 		maxItemCount = _maxItemCount;
+		datasX = new ArrayList<Double>();
+		datasY = new ArrayList<Double>();
 		LxPlotChart.chartCount++;
 		// getChartContainer(true).add(getChartPanel());
 		LxPlotChart.getDesktopPane().add(getChartInternalFrame());
@@ -117,7 +125,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 				}
 
 			};
-			
+
 			LxPlotChart.desktopPane.setDesktopManager(new CustomDesktopManager());
 			LxPlotChart.desktopPane.setPreferredSize(new Dimension(900, 600));
 		}
@@ -375,8 +383,8 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		// we put the chart into a panel
 		if (chartPanel == null) {
 			chartPanel = new ChartPanel(getJFreeChart());
-//			border = BorderFactory.createTitledBorder(name);
-//			chartPanel.setBorder(border);
+			//			border = BorderFactory.createTitledBorder(name);
+			//			chartPanel.setBorder(border);
 			chartPanel.setMinimumSize(new Dimension(10, 10));
 			// default size
 			// chartPanel.setPreferredSize(new Dimension(300, 300));
@@ -395,8 +403,10 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		if (chart == null) {
 			XYPlot plot;
 			NumberAxis range;
+
 			switch (chartType) {
 			case LINE:
+				System.out.println("Ici");
 				chart = ChartFactory.createXYLineChart("", // chart
 						// title
 						"", // x axis label
@@ -405,7 +415,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 						PlotOrientation.VERTICAL, true, // include legend
 						true, // tooltips
 						false // urls
-				);
+						);
 
 				plot = (XYPlot) chart.getPlot();
 
@@ -414,7 +424,8 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 				range.setAutoRangeIncludesZero(false);
 				plot.setBackgroundPaint(Color.white);
 				plot.setRangeGridlinePaint(Color.black);
-				// plot.setRenderer(new SamplingXYLineRenderer());
+
+				//plot.setRenderer(1,new SamplingXYLineRenderer());
 				break;
 			case PLOT:
 				chart = ChartFactory.createScatterPlot("", // chart
@@ -425,7 +436,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 						PlotOrientation.VERTICAL, true, // include legend
 						true, // tooltips
 						false // urls
-				);
+						);
 
 				plot = (XYPlot) chart.getPlot();
 
@@ -497,6 +508,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		}
 	}
 
+	//TODO
 	private void drawPoint(PointRequest _pointRequest) {
 		switch (chartType) {
 		case PLOT:
@@ -504,6 +516,28 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			break;
 		case LINE:
 			getSeries(_pointRequest.serieName).addOrUpdate(_pointRequest.x, _pointRequest.y);
+			datasX.add(_pointRequest.x);
+			datasY.add(_pointRequest.y);
+			int tendance = 0;
+			double averX = 0;
+			double averY = 0;
+			double sx = 0;
+			double scx = 0;
+			double sy = 0;
+			double prod = 0;
+			PointRequest ptrending = new PointRequest(_pointRequest.serieName,0,0);
+			for(int i = 0; i< datasX.size();i++){
+				sx += datasX.get(i);
+				scx += Math.pow(datasX.get(i),2);
+				sy += datasY.get(i);
+				prod += datasX.get(i) * datasY.get(i);
+			}
+			double b = (datasX.size()*prod - (sx*sy))/((datasX.size()*scx)-Math.pow(sx, 2));
+			double a = sy/datasX.size() - b*(sx/datasX.size());
+			for(int i =0; i < datasX.get(datasX.size()-1);i++){
+				double res = b*i+a;
+				getSeries("Trending").addOrUpdate(i,res);
+			}
 			break;
 		case BAR:
 			getCategoryDataset().addValue(_pointRequest.y, _pointRequest.serieName, String.valueOf(_pointRequest.x));
