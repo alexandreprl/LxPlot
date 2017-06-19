@@ -150,4 +150,8 @@ public class LxPlot {
 	 * Server's map linking name and server
 	 */
 	private static Map<String, ILxPlotServer> servers = new TreeMap<String, ILxPlotServer>();
+	
+	public static Map<String, ILxPlotChart> getCharts(){
+		return getServer().getCharts();
+	}
 }

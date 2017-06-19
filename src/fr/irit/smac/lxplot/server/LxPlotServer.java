@@ -105,4 +105,9 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 		return getChart(_name, ChartType.LINE, true, -1);
 	}
 
+	@Override
+	public Map<String, ILxPlotChart> getCharts() {
+		return charts;
+	}
+
 }

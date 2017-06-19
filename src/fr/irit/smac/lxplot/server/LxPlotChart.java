@@ -11,6 +11,7 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,8 @@ import org.jfree.chart.renderer.xy.SamplingXYLineRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -72,6 +75,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	// private JFrame chartFrame;
 	private JInternalFrame internalChartFrame;
 	private DefaultCategoryDataset categoryDataset;
+	private DefaultPieDataset pieDataset;
 	private LinkedList<PointRequest> queue = new LinkedList<>();
 	private Semaphore threadSemaphore = new Semaphore(-1);
 
@@ -450,7 +454,8 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 				chart = ChartFactory.createBarChart("", "", "", getCategoryDataset(), PlotOrientation.VERTICAL, true,
 						true, false);
 				break;
-
+			case PIE:
+				chart = ChartFactory.createPieChart("",getPieDataset(),true,true,false);
 			}
 		}
 		return chart;
@@ -462,6 +467,13 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		return categoryDataset;
 	}
 
+
+	private synchronized DefaultPieDataset getPieDataset() {
+		if (pieDataset == null)
+			pieDataset = new DefaultPieDataset();
+		return pieDataset;
+	}
+	
 	private synchronized XYSeries getSeries(final String _serieName) {
 		if (firstSerie == null) {
 			firstSerie = _serieName;
@@ -518,14 +530,10 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			getSeries(_pointRequest.serieName).addOrUpdate(_pointRequest.x, _pointRequest.y);
 			datasX.add(_pointRequest.x);
 			datasY.add(_pointRequest.y);
-			int tendance = 0;
-			double averX = 0;
-			double averY = 0;
 			double sx = 0;
 			double scx = 0;
 			double sy = 0;
 			double prod = 0;
-			PointRequest ptrending = new PointRequest(_pointRequest.serieName,0,0);
 			for(int i = 0; i< datasX.size();i++){
 				sx += datasX.get(i);
 				scx += Math.pow(datasX.get(i),2);
@@ -542,6 +550,8 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		case BAR:
 			getCategoryDataset().addValue(_pointRequest.y, _pointRequest.serieName, String.valueOf(_pointRequest.x));
 			break;
+		case PIE:
+			getPieDataset().insertValue(0,""+_pointRequest.x,_pointRequest.y);
 		}
 		if (!getMainWindow().getFrame().isVisible())
 			getMainWindow().getFrame().setVisible(true);

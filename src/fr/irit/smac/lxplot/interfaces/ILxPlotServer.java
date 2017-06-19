@@ -1,5 +1,7 @@
 package fr.irit.smac.lxplot.interfaces;
 
+import java.util.Map;
+
 import fr.irit.smac.lxplot.commons.ChartType;
 
 /**
@@ -32,5 +34,7 @@ public interface ILxPlotServer {
 	public boolean getUniqueWindow();
 
 	public void removeChart(String name);
+	
+	public Map<String, ILxPlotChart> getCharts();
 
 }

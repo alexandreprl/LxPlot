@@ -7,5 +7,5 @@ package fr.irit.smac.lxplot.commons;
  *
  */
 public enum ChartType {
-	PLOT, LINE, BAR
+	PLOT, LINE, BAR, PIE
 }

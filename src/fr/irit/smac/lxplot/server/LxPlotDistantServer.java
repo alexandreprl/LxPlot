@@ -75,4 +75,9 @@ public class LxPlotDistantServer implements ILxPlotServer {
 	public synchronized ILxPlotChart getChart(String _name) {
 		return getChart(_name, ChartType.LINE, true, -1);
 	}
+
+	@Override
+	public Map<String, ILxPlotChart> getCharts() {
+		return charts;
+	}
 }
