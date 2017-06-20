@@ -42,6 +42,8 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
+import org.jfree.data.general.WaferMapDataset;
+import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -76,6 +78,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	private JInternalFrame internalChartFrame;
 	private DefaultCategoryDataset categoryDataset;
 	private DefaultPieDataset pieDataset;
+	private WaferMapDataset waferDataset;
 	private LinkedList<PointRequest> queue = new LinkedList<>();
 	private Semaphore threadSemaphore = new Semaphore(-1);
 
@@ -455,7 +458,9 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 						true, false);
 				break;
 			case PIE:
-				chart = ChartFactory.createPieChart("",getPieDataset(),true,true,false);
+				chart = ChartFactory.createPieChart3D("",getPieDataset(),true,true,false);
+			case WAFER:
+				chart = ChartFactory.createWaferMapChart("", getWaferDataset(), PlotOrientation.VERTICAL, true, true, false);
 			}
 		}
 		return chart;
@@ -472,6 +477,12 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		if (pieDataset == null)
 			pieDataset = new DefaultPieDataset();
 		return pieDataset;
+	}
+	
+	private synchronized WaferMapDataset getWaferDataset() {
+		if (waferDataset == null)
+			waferDataset = new WaferMapDataset(10,10);
+		return waferDataset;
 	}
 	
 	private synchronized XYSeries getSeries(final String _serieName) {
@@ -552,6 +563,8 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			break;
 		case PIE:
 			getPieDataset().insertValue(0,""+_pointRequest.x,_pointRequest.y);
+		case WAFER:
+			getWaferDataset().addValue(_pointRequest.y, ""+_pointRequest.x, ""+_pointRequest.y);
 		}
 		if (!getMainWindow().getFrame().isVisible())
 			getMainWindow().getFrame().setVisible(true);
