@@ -41,11 +41,11 @@ public class LocalChart {
 		}
 		// Add plots to the chart "My Chart" which will be created during this
 		// call
-		LxPlot.getChart("My chart").add(2, 3);
+		/*LxPlot.getChart("My chart").add(2, 3);
 		LxPlot.getChart("My chart").add(3, 3);
 		
 		//Override the value at x=3
-		LxPlot.getChart("My chart").add(3, 4);
+		LxPlot.getChart("My chart").add(3, 4);*/
 
 		// Access the JFreeChart object (only from the server side)
 		final JFreeChart chart = ((LxPlotChart) (LxPlot.getChart("Layer")))
@@ -60,7 +60,7 @@ public class LocalChart {
 		
 
 
-		// First, we inform the server that the chart "Layer" must be of type
+		/*// First, we inform the server that the chart "Layer" must be of type
 		LxPlot.getChart("Bar chart", ChartType.BAR);
 
 		// Add plots to the chart "Layer" for serie #0
@@ -68,11 +68,31 @@ public class LocalChart {
 		LxPlot.getChart("Bar chart", ChartType.BAR).add(2, 2.5);
 		LxPlot.getChart("Bar chart", ChartType.BAR).add(2, 3);
 		
+		LxPlot.getChart("Linear chart", ChartType.LINE);
+		LxPlot.getChart("Linear chart", ChartType.LINE).add(1, 2);
+		LxPlot.getChart("Linear chart", ChartType.LINE).add(2, 2.5);
+		*/
 		//Dispose test
-		for (int i=0;i<1000;i++){
-			LxPlot.getChart("Bar chart", ChartType.BAR).add(i, 3);
+		
+		LxPlot.getChart("wafer chart", ChartType.WAFER);
+		LxPlot.getChart("wafer chart", ChartType.WAFER).add(1,1.0);
+		LxPlot.getChart("wafer chart", ChartType.WAFER).add(2,2.0);
+		LxPlot.getChart("wafer chart", ChartType.WAFER).add(3,3.0);
+		LxPlot.getChart("wafer chart", ChartType.WAFER).add(4,1.0);
+		LxPlot.getChart("wafer chart", ChartType.WAFER).add(5,1.5);
+		LxPlot.getChart("wafer chart", ChartType.WAFER).add(0,1.5);
+
+		//LxPlot.getChart("scatter chart", ChartType.SCATTER).add(7, 10);
+		for (int i=3;i<100;i++){
+			/*LxPlot.getChart("Bar chart", ChartType.BAR).add(i, 3);
+			if(i%4==0)
+				LxPlot.getChart("Linear chart", ChartType.LINE).add(i,i);
+			else
+				LxPlot.getChart("Linear chart", ChartType.LINE).add(i,i+i);
+			LxPlot.getChart("pie chart", ChartType.PIE).add(i%6, (i*i)%100);;*/
+			
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
