@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Paint;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
@@ -42,8 +43,11 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CombinedDomainCategoryPlot;
 import org.jfree.chart.plot.DatasetRenderingOrder;
+import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.WaferMapPlot;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.WaferMapRenderer;
 import org.jfree.chart.renderer.xy.SamplingXYLineRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
@@ -62,6 +66,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.date.MonthConstants;
+import org.jfree.util.PaintList;
 
 import fr.irit.smac.lxplot.commons.ChartType;
 import fr.irit.smac.lxplot.interfaces.ILxPlotChart;
@@ -118,6 +123,8 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	private XYSeries series1;
 	private XYSeries series2;
 	XYPlot plot;
+	WaferMapPlot plot2;
+	WaferMapRenderer wafR;
 	
 	private int waferx = 1;
 	private int wafery = 0;
@@ -148,7 +155,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		new Thread(this).start();
 	}
 	
-	public LxPlotChart(final String _name, final ChartType _chartType, final ILxPlotServer _server, final boolean _blocking, final int _maxItemCount,boolean multiple) {
+	public LxPlotChart(final String _name, final ChartType _chartType, final ILxPlotServer _server, final boolean _blocking, final int _maxItemCount,boolean _multiple) {
 		name = _name;
 		chartType = _chartType;
 		server = _server;
@@ -156,7 +163,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		maxItemCount = _maxItemCount;
 		datasX = new ArrayList<Double>();
 		datasY = new ArrayList<Double>();
-		this.multiple = multiple;
+		multiple = _multiple;
 		LxPlotChart.chartCount++;
 		// getChartContainer(true).add(getChartPanel());
 		LxPlotChart.getDesktopPane().add(getChartInternalFrame());
@@ -431,8 +438,6 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			// * ((LxPlotChart.chartCount - 1) / LxPlotChart.cols),
 			// wx, wy);
 
-			if(multiple){
-			}
 			internalChartFrame.add(getChartPanel());
 			internalChartFrame.setVisible(true);
 		}
@@ -445,7 +450,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 
 	private synchronized ChartPanel getChartPanel() {
 		// we put the chart into a panel
-		if (chartPanel == null || chartType == ChartType.MULTIPLE) {
+		if (chartPanel == null) {
 			chartPanel = new ChartPanel(getJFreeChart());
 			//			border = BorderFactory.createTitledBorder(name);
 			//			chartPanel.setBorder(border);
@@ -522,7 +527,17 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			case PIE:
 				chart = ChartFactory.createPieChart3D("",getPieDataset(),true,true,false);
 			case WAFER:
-				chart = ChartFactory.createWaferMapChart("", getWaferDataset(), PlotOrientation.VERTICAL, true, true, false);
+				wafR = new WaferMapRenderer(10,10);
+				wafR.setSeriesPaint(0, Color.RED);
+				wafR.setSeriesPaint(1, Color.BLUE);
+				wafR.setSeriesPaint(2, Color.YELLOW);
+				wafR.setSeriesPaint(3, Color.GREEN);
+				wafR.setSeriesPaint(4, Color.ORANGE);
+				//TODO
+				plot2 = new WaferMapPlot(getWaferDataset());
+				plot2.setRenderer(wafR);
+				wafR.setPlot(plot2);
+				chart = new JFreeChart("",JFreeChart.DEFAULT_TITLE_FONT, plot2,true);
 				break;
 			case MULTIPLE: 
 				chart = multiple();
@@ -561,7 +576,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	
 	private synchronized WaferMapDataset getWaferDataset() {
 		if (waferDataset == null)
-			waferDataset = new WaferMapDataset(30,20);
+			waferDataset = new WaferMapDataset(30,30);
 		return waferDataset;
 	}
 	
@@ -648,9 +663,28 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			getPieDataset().insertValue(0,""+_pointRequest.x,_pointRequest.y);
 			break;
 		case WAFER:
-			//this.waferDataset.addValue(_pointRequest.y, waferx, wafery);
-			//waferx++;
-			//wafery++;
+			//TODO
+			/*System.out.println(waferx);
+			System.out.println(wafery);
+			getWaferDataset().addValue(_pointRequest.y, waferx, wafery);
+			plot2 = new WaferMapPlot(getWaferDataset(),wafR);
+			wafR.setPlot(plot2);
+			chart = ChartFactory.createWaferMapChart("", getWaferDataset(), PlotOrientation.VERTICAL, true, true, false);
+			LxPlotChart.getDesktopPane().remove(internalChartFrame);
+			internalChartFrame = new JInternalFrame();
+			chartPanel = new ChartPanel(chart);
+			internalChartFrame.add(chartPanel);
+			internalChartFrame.setVisible(true);
+			LxPlotChart.getDesktopPane().add(internalChartFrame);
+			if(wafery == 29 ){
+				wafery = 0;
+				if(waferx == 29){
+					waferx = 0;
+				}else
+					waferx++;
+			}
+			else
+				wafery++;*/
 			break;
 		case MULTIPLE:
 			getSeries(_pointRequest.serieName).addOrUpdate(_pointRequest.x, _pointRequest.y);
