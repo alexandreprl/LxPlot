@@ -49,6 +49,7 @@ import org.jfree.chart.plot.CombinedDomainCategoryPlot;
 import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.SpiderWebPlot;
 import org.jfree.chart.plot.WaferMapPlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.WaferMapRenderer;
@@ -705,6 +706,12 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 							true
 							);
 					break;
+				case SPIDER:
+					chart = new JFreeChart(
+							"",
+							new Font("SansSerif", Font.BOLD, 14),
+							new SpiderWebPlot(getCategoryDataset()),
+							true);
 				}
 			}
 		}
@@ -964,6 +971,10 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 				ArrayList<Double> listBox = new ArrayList<Double>();
 				listBox.add(_pointRequest.x);
 				getBoxDataset().add(listBox, "Value "+_pointRequest.y, "Type "+_pointRequest.y);
+				break;
+			case SPIDER:
+				getCategoryDataset().addValue(_pointRequest.y, _pointRequest.serieName, String.valueOf(_pointRequest.x));
+				break;
 			}
 			if (!getMainWindow().getFrame().isVisible())
 				getMainWindow().getFrame().setVisible(true);
