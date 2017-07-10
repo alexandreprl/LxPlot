@@ -728,6 +728,21 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 							new Font("SansSerif", Font.BOLD, 14),
 							new SpiderWebPlot(getCategoryDataset()),
 							true);
+					break;
+				case SHAPE:
+					plot = new XYPlot();
+					domainAxis = new DateAxis("");   
+					domainAxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);  
+					plot.setDomainAxis(domainAxis);
+					rangeAxis = new NumberAxis("Value");   
+					plot.setRangeAxis(rangeAxis);
+					plot.setDataset(getDataset());
+					plot.setRenderer(new XYLineAndShapeRenderer());
+					chart = new JFreeChart(
+							"LineAndShape chart", 
+							JFreeChart.DEFAULT_TITLE_FONT,
+							plot, 
+							true);
 				}
 			}
 		}
@@ -743,6 +758,12 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 				plot.setDataset(nbChart,getDataset());
 				XYDotRenderer plotRenderer = new XYDotRenderer();
 				plot.setRenderer(nbChart,plotRenderer);
+				nbChart++;
+				break;
+			case SHAPE: 
+				plot.setDataset(nbChart,getDataset());
+				XYLineAndShapeRenderer shapeRenderer = new XYLineAndShapeRenderer();
+				plot.setRenderer(nbChart,shapeRenderer);
 				nbChart++;
 				break;
 			case LINE:
@@ -926,6 +947,9 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		else{
 			switch (chartType) {
 			case PLOT:
+				getSeries(_pointRequest.serieName).add(_pointRequest.x, _pointRequest.y);
+				break;
+			case SHAPE:
 				getSeries(_pointRequest.serieName).add(_pointRequest.x, _pointRequest.y);
 				break;
 			case LINE:
