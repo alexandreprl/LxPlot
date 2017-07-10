@@ -51,4 +51,11 @@ public class LxPlotDistantChart implements ILxPlotChart {
 		out.flush();
 	}
 
+
+	@Override
+	public void addBox(List<Double> list) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

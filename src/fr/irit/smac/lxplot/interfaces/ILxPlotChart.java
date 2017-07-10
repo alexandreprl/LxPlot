@@ -1,5 +1,7 @@
 package fr.irit.smac.lxplot.interfaces;
 
+import java.util.List;
+
 /**
  * Common chart's interface between the server and the client.
  *
@@ -28,4 +30,12 @@ public interface ILxPlotChart {
 	 * Close the chart on the server.
 	 */
 	public void close();
+
+	/**
+	 * Add the data for a box chart
+	 * 
+	 * @param list
+	 */
+	public void addBox(List<Double> list);
+
 }

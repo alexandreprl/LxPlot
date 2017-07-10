@@ -14,6 +14,7 @@ import java.beans.PropertyVetoException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.renderer.xy.SamplingXYLineRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.chart.renderer.xy.XYBoxAndWhiskerRenderer;
 import org.jfree.chart.renderer.xy.XYDotRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -66,8 +68,11 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.data.general.SeriesDataset;
 import org.jfree.data.general.WaferMapDataset;
+import org.jfree.data.statistics.BoxAndWhiskerItem;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import org.jfree.data.statistics.DefaultBoxAndWhiskerXYDataset;
 import org.jfree.data.time.Day;
+import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -131,16 +136,17 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 
 	private XYSeries series1;
 	private XYSeries series2;
-	XYPlot plot;
-	WaferMapPlot plot2;
-	WaferMapRenderer wafR;
+	private XYPlot plot;
+	private WaferMapPlot plot2;
+	private WaferMapRenderer wafR;
 
+	private Day d ;
 	private int waferx = 1;
 	private int wafery = 0;
 	private ArrayList<Double> listWafer = new ArrayList<Double>();
 	private final int limx = 30;
 	private final int limy = 30;
-	private DefaultBoxAndWhiskerCategoryDataset boxDataset;
+	private DefaultBoxAndWhiskerXYDataset boxDataset;
 
 	/**
 	 * Default constructor
@@ -434,6 +440,20 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	}
 
 	@Override
+	public synchronized void addBox(List<Double> list) {
+		if(d == null)
+			d = new Day(new Date());
+		RegularTimePeriod regularTimePeriod = d.next();
+		List<Double> l = new ArrayList<Double>();
+		l.add(3.0);
+		BoxAndWhiskerItem item = new BoxAndWhiskerItem(
+				list.get(0), list.get(1), list.get(2),
+				list.get(3), list.get(4), list.get(5),
+				null, null, new ArrayList<Double>());
+		this.getBoxDataset().add(new Date(), item);
+	}
+	
+	@Override
 	public synchronized void add(final double _x, final double _y) {
 		if (firstSerie == null) {
 			firstSerie = "Default";
@@ -689,22 +709,18 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 					chart = multiple();
 					break;
 				case BOX:
-					DefaultBoxAndWhiskerCategoryDataset dataset = getBoxDataset();
 
-					CategoryAxis xAxis = new CategoryAxis("Type");
-					NumberAxis yAxis = new NumberAxis("Value");
-					yAxis.setAutoRangeIncludesZero(false);
-					BoxAndWhiskerRenderer renderer = new BoxAndWhiskerRenderer();
-					renderer.setFillBox(false);
-					renderer.setToolTipGenerator(new BoxAndWhiskerToolTipGenerator());
-					CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
+					DateAxis domainAxis = new DateAxis("Time");
+					NumberAxis rangeAxis = new NumberAxis("");
+					XYBoxAndWhiskerRenderer renderer = new XYBoxAndWhiskerRenderer();
+					
+					plot = new XYPlot(getBoxDataset(), domainAxis, rangeAxis, renderer);
 
 					chart = new JFreeChart(
-							"",
-							new Font("SansSerif", Font.BOLD, 14),
-							plot,
-							true
-							);
+							"Box chart", 
+							JFreeChart.DEFAULT_TITLE_FONT,
+							plot, 
+							true);
 					break;
 				case SPIDER:
 					chart = new JFreeChart(
@@ -799,9 +815,9 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	 * 
 	 * @return A sample dataset.
 	 */
-	private DefaultBoxAndWhiskerCategoryDataset getBoxDataset() {
+	private DefaultBoxAndWhiskerXYDataset getBoxDataset() {
 		if(boxDataset == null)
-			boxDataset = new DefaultBoxAndWhiskerCategoryDataset();
+			boxDataset = new DefaultBoxAndWhiskerXYDataset("Default");
 
 		return boxDataset;
 	}
@@ -967,11 +983,11 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			case MULTIPLE:
 				getSeries(_pointRequest.serieName).addOrUpdate(_pointRequest.x, _pointRequest.y);
 				break;
-			case BOX:
+			/*case BOX:
 				ArrayList<Double> listBox = new ArrayList<Double>();
 				listBox.add(_pointRequest.x);
 				getBoxDataset().add(listBox, "Value "+_pointRequest.y, "Type "+_pointRequest.y);
-				break;
+				break;*/
 			case SPIDER:
 				getCategoryDataset().addValue(_pointRequest.y, _pointRequest.serieName, String.valueOf(_pointRequest.x));
 				break;
