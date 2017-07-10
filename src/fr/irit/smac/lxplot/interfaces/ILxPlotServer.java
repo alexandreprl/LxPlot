@@ -1,5 +1,6 @@
 package fr.irit.smac.lxplot.interfaces;
 
+import java.util.List;
 import java.util.Map;
 
 import fr.irit.smac.lxplot.commons.ChartType;
@@ -20,6 +21,7 @@ public interface ILxPlotServer {
 	 * @param _maxItemCount 
 	 * @return
 	 */
+	public ILxPlotChart getChart(String _name, List<ChartType> _chartType, boolean _blocking, final int _maxItemCount);
 	public ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking, final int _maxItemCount);
 	public ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking);
 	public ILxPlotChart getChart(String _name, ChartType _chartType, final int _maxItemCount);
@@ -33,6 +35,10 @@ public interface ILxPlotServer {
 	 */
 	public boolean getUniqueWindow();
 
+	/**
+	 * Remove the chart corresponding of the given name.
+	 * @param name
+	 */
 	public void removeChart(String name);
 	
 	public Map<String, ILxPlotChart> getCharts();

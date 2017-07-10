@@ -28,19 +28,23 @@ import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.Renderer;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.demo.*;
+import org.jfree.chart.labels.BoxAndWhiskerToolTipGenerator;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.annotations.XYTextAnnotation;
+import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickMarkPosition;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.CombinedDomainCategoryPlot;
 import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.Plot;
@@ -48,9 +52,11 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.WaferMapPlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.WaferMapRenderer;
+import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.renderer.xy.SamplingXYLineRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.chart.renderer.xy.XYDotRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -59,6 +65,7 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.data.general.SeriesDataset;
 import org.jfree.data.general.WaferMapDataset;
+import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.data.time.Day;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.IntervalXYDataset;
@@ -94,6 +101,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	private JFreeChart chartBis;
 	private TitledBorder border;
 	private ChartType chartType = ChartType.PLOT;
+	private List<ChartType> chartTypes;
 	private ChartPanel chartPanel;
 	private ChartPanel chartPanelBis;
 	private String firstSerie;
@@ -112,30 +120,50 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	private int maxItemCount = -1;
 
 	private boolean multiple = true;
-	
+
 	private List<Double> datasX;
 	private List<Double> datasY;
-	
+
 	private XYSeriesCollection xyDataset;  
 	private IntervalXYDataset intervalXYDataset;
 	private XYItemRenderer renderer2;
-	
+
 	private XYSeries series1;
 	private XYSeries series2;
 	XYPlot plot;
 	WaferMapPlot plot2;
 	WaferMapRenderer wafR;
-	
+
 	private int waferx = 1;
 	private int wafery = 0;
 	private ArrayList<Double> listWafer = new ArrayList<Double>();
 	private final int limx = 30;
 	private final int limy = 30;
+	private DefaultBoxAndWhiskerCategoryDataset boxDataset;
 
+	/**
+	 * Default constructor
+	 * @param _server
+	 * 			The server.
+	 */
 	public LxPlotChart(final ILxPlotServer _server) {
 		this("Untitled", _server);
 	}
 
+	/**
+	 * Construct a chart.
+	 * 
+	 * @param _name
+	 * 			The name.
+	 * @param _chartType
+	 * 			The type.
+	 * @param _server
+	 * 			The server.
+	 * @param _blocking
+	 * 			If it is blocking.
+	 * @param _maxItemCount
+	 * 			The max item it can have.
+	 */
 	public LxPlotChart(final String _name, final ChartType _chartType, final ILxPlotServer _server, final boolean _blocking, final int _maxItemCount) {
 		name = _name;
 		chartType = _chartType;
@@ -145,7 +173,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		datasX = new ArrayList<Double>();
 		datasY = new ArrayList<Double>();
 		multiple = (chartType == ChartType.MULTIPLE);
-			
+
 		LxPlotChart.chartCount++;
 		// getChartContainer(true).add(getChartPanel());
 		LxPlotChart.getDesktopPane().add(getChartInternalFrame());
@@ -154,7 +182,57 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 
 		new Thread(this).start();
 	}
-	
+
+	/**
+	 * Construct a chart.
+	 * 
+	 * @param _name
+	 * 			The name.
+	 * @param _chartType
+	 * 			The type.
+	 * @param _server
+	 * 			The server.
+	 * @param _blocking
+	 * 			If it is blocking.
+	 * @param _maxItemCount
+	 * 			The max item it can have.
+	 */
+	public LxPlotChart(final String _name, final List<ChartType> _chartType, final ILxPlotServer _server, final boolean _blocking, final int _maxItemCount) {
+		name = _name;
+		chartTypes = new ArrayList<ChartType>();
+		chartTypes = _chartType;
+		server = _server;
+		blocking = _blocking;
+		maxItemCount = _maxItemCount;
+		datasX = new ArrayList<Double>();
+		datasY = new ArrayList<Double>();
+
+		LxPlotChart.chartCount++;
+		// getChartContainer(true).add(getChartPanel());
+		LxPlotChart.getDesktopPane().add(getChartInternalFrame());
+		// getChartContainer().revalidate();
+		// getChartContainer().repaint();
+
+		new Thread(this).start();
+	}
+
+	/**
+	 * Construct a chart with several type.
+	 * 
+	 * @param _name
+	 * 			The name.
+	 * @param _chartType
+	 * 			The type.
+	 * @param _server
+	 * 			The server.
+	 * @param _blocking
+	 * 			If it is blocking.
+	 * @param _maxItemCount
+	 * 			The max item it can have.
+	 * @param _multiple
+	 * 			If there is more than one type.
+	 * 			
+	 */
 	public LxPlotChart(final String _name, final ChartType _chartType, final ILxPlotServer _server, final boolean _blocking, final int _maxItemCount,boolean _multiple) {
 		name = _name;
 		chartType = _chartType;
@@ -173,10 +251,23 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		new Thread(this).start();
 	}
 
+	/**
+	 * Construct a default chart with a name.
+	 * 
+	 * @param _name
+	 * 			The name.
+	 * @param _server
+	 * 			The server.
+	 */
 	public LxPlotChart(final String _name, final ILxPlotServer _server) {
 		this(_name, ChartType.LINE, _server, true, -1);
 	}
 
+	/**
+	 * Return the desktopPane.
+	 * 
+	 * @return desktopPane
+	 */
 	public synchronized static JDesktopPane getDesktopPane() {
 		if (LxPlotChart.desktopPane == null) {
 			LxPlotChart.desktopPane = new JDesktopPane() {
@@ -201,6 +292,11 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		return LxPlotChart.desktopPane;
 	}
 
+	/**
+	 * Return the mainWindow
+	 * 
+	 * @return window
+	 */
 	private synchronized static MainWindow getMainWindow() {
 		frameLock.lock();
 		if (LxPlotChart.window == null) {
@@ -293,6 +389,9 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	// return getChartContainer(false);
 	// }
 
+	/**
+	 * Refresh the window to adjust the size of all non icon window.
+	 */
 	public static void refreshLayout() {
 		int x = 0;
 		int width = 10, height = 10;
@@ -383,6 +482,11 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	// }
 	// return chartContainer;
 	// }
+	/**
+	 * Return the internalChartFrame, if it is null then it is created.
+	 * 
+	 * @return internalChartFrame
+	 */
 	private synchronized JInternalFrame getChartInternalFrame() {
 		if (internalChartFrame == null) {
 			internalChartFrame = new JInternalFrame(getInternalFrameName(), true, true, true,
@@ -444,10 +548,20 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		return internalChartFrame;
 	}
 
+	/**
+	 * Return the name of the internalFrame.
+	 * 
+	 * @return name + " (" + (LxPlotChart.chartCount) + ") "+(!blocking?"ASYNC":"")
+	 */
 	private String getInternalFrameName() {
 		return name + " (" + (LxPlotChart.chartCount) + ") "+(!blocking?"ASYNC":"");
 	}
 
+	/**
+	 * Return the ChartPanel.
+	 * 
+	 * @return chartPanel
+	 */
 	private synchronized ChartPanel getChartPanel() {
 		// we put the chart into a panel
 		if (chartPanel == null) {
@@ -457,9 +571,18 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			chartPanel.setMinimumSize(new Dimension(10, 10));
 			// default size
 			// chartPanel.setPreferredSize(new Dimension(300, 300));
+			this.chartPanel.setDomainZoomable(true);
+			this.chartPanel.setRangeZoomable(true);
+			this.chartPanel.setMouseWheelEnabled(true);
 		}
 		return chartPanel;
 	}
+
+	/**
+	 * Return a XYSeriesCollection, if it is null, it is created.
+	 * 
+	 * @return dataset
+	 */
 	private synchronized XYSeriesCollection getDataset() {
 		if (dataset == null) {
 			dataset = new XYSeriesCollection();
@@ -467,6 +590,12 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		return dataset;
 	}
 
+
+	/**
+	 * Return a XYSeriesCollection, if it is null, it is created.
+	 * 
+	 * @return xyDataset
+	 */
 	private synchronized XYSeriesCollection getDatasetMultiple() {
 		if (xyDataset == null) {
 			xyDataset = new XYSeriesCollection();
@@ -474,79 +603,163 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		return xyDataset;
 	}
 
+	/**
+	 * Return the chart
+	 * In the case null a new chart is created depending of the type.
+	 * 
+	 * @return chart
+	 */
 	public synchronized JFreeChart getJFreeChart() {
-		if (chart == null) {
-			NumberAxis range;
+		if(chartTypes != null)
+			getMultipleJFreeChart();
+		else{
+			if (chart == null) {
+				NumberAxis range;
 
-			switch (chartType) {
-			case LINE:
-				chart = ChartFactory.createXYLineChart("", // chart
-						// title
-						"", // x axis label
-						"", // y axis label
-						getDataset(), // data
-						PlotOrientation.VERTICAL, true, // include legend
-						true, // tooltips
-						false // urls
-						);
+				switch (chartType) {
+				//Creation of a line chart
+				case LINE:
+					chart = ChartFactory.createXYLineChart("", // chart
+							// title
+							"", // x axis label
+							"", // y axis label
+							getDataset(), // data
+							PlotOrientation.VERTICAL, true, // include legend
+							true, // tooltips
+							false // urls
+							);
 
-				plot = (XYPlot) chart.getPlot();
+					plot = (XYPlot) chart.getPlot();
 
-				range = (NumberAxis) plot.getRangeAxis();
-				range.setAutoRange(true);
-				range.setAutoRangeIncludesZero(false);
-				plot.setBackgroundPaint(Color.white);
-				plot.setRangeGridlinePaint(Color.black);
+					range = (NumberAxis) plot.getRangeAxis();
+					range.setAutoRange(true);
+					range.setAutoRangeIncludesZero(false);
+					plot.setBackgroundPaint(Color.white);
+					plot.setRangeGridlinePaint(Color.black);
 
-				//plot.setRenderer(1,new SamplingXYLineRenderer());
-				break;
-			case PLOT:
-				chart = ChartFactory.createScatterPlot("", // chart
-						// title
-						"", // x axis label
-						"", // y axis label
-						getDataset(), // data
-						PlotOrientation.VERTICAL, true, // include legend
-						true, // tooltips
-						false // urls
-						);
+					//plot.setRenderer(1,new SamplingXYLineRenderer());
+					break;
+					//Creation of a Plot chart
+				case PLOT:
+					chart = ChartFactory.createScatterPlot("", // chart
+							// title
+							"", // x axis label
+							"", // y axis label
+							getDataset(), // data
+							PlotOrientation.VERTICAL, true, // include legend
+							true, // tooltips
+							false // urls
+							);
 
-				plot = (XYPlot) chart.getPlot();
+					plot = (XYPlot) chart.getPlot();
 
-				range = (NumberAxis) plot.getRangeAxis();
-				range.setAutoRange(true);
-				range.setAutoRangeIncludesZero(false);
-				plot.setBackgroundPaint(Color.white);
-				plot.setRangeGridlinePaint(Color.black);
-				break;
-			case BAR:
-				chart = ChartFactory.createBarChart("", "", "", getCategoryDataset(), PlotOrientation.VERTICAL, true,
-						true, false);
-					
-				break;
-			case PIE:
-				chart = ChartFactory.createPieChart3D("",getPieDataset(),true,true,false);
-			case WAFER:
-				wafR = new WaferMapRenderer(10,10);
-				wafR.setSeriesPaint(0, Color.RED);
-				wafR.setSeriesPaint(1, Color.BLUE);
-				wafR.setSeriesPaint(2, Color.YELLOW);
-				wafR.setSeriesPaint(3, Color.GREEN);
-				wafR.setSeriesPaint(4, Color.ORANGE);
-				//TODO
-				plot2 = new WaferMapPlot(getWaferDataset());
-				plot2.setRenderer(wafR);
-				wafR.setPlot(plot2);
-				chart = new JFreeChart("",JFreeChart.DEFAULT_TITLE_FONT, plot2,true);
-				break;
-			case MULTIPLE: 
-				chart = multiple();
-				break;
+					range = (NumberAxis) plot.getRangeAxis();
+					range.setAutoRange(true);
+					range.setAutoRangeIncludesZero(false);
+					plot.setBackgroundPaint(Color.white);
+					plot.setRangeGridlinePaint(Color.black);
+					break;
+					//Creation of a Bar chart
+				case BAR:
+					chart = ChartFactory.createBarChart("", "", "", getCategoryDataset(), PlotOrientation.VERTICAL, true,
+							true, false);
+
+					break;
+					//Creation of a Pie chart	
+				case PIE:
+					chart = ChartFactory.createPieChart3D("",getPieDataset(),true,true,false);
+					break;
+					//Creation of a Wafer chart TODO
+				case WAFER:
+					wafR = new WaferMapRenderer(10,10);
+					wafR.setSeriesPaint(0, Color.RED);
+					wafR.setSeriesPaint(1, Color.BLUE);
+					wafR.setSeriesPaint(2, Color.YELLOW);
+					wafR.setSeriesPaint(3, Color.GREEN);
+					wafR.setSeriesPaint(4, Color.ORANGE);
+					//TODO
+					plot2 = new WaferMapPlot(getWaferDataset());
+					plot2.setRenderer(wafR);
+					wafR.setPlot(plot2);
+					chart = new JFreeChart("",JFreeChart.DEFAULT_TITLE_FONT, plot2,true);
+					break;
+					//Creation of a bar and line chart	
+				case MULTIPLE: 
+					chart = multiple();
+					break;
+				case BOX:
+					DefaultBoxAndWhiskerCategoryDataset dataset = getBoxDataset();
+
+					CategoryAxis xAxis = new CategoryAxis("Type");
+					NumberAxis yAxis = new NumberAxis("Value");
+					yAxis.setAutoRangeIncludesZero(false);
+					BoxAndWhiskerRenderer renderer = new BoxAndWhiskerRenderer();
+					renderer.setFillBox(false);
+					renderer.setToolTipGenerator(new BoxAndWhiskerToolTipGenerator());
+					CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
+
+					chart = new JFreeChart(
+							"",
+							new Font("SansSerif", Font.BOLD, 14),
+							plot,
+							true
+							);
+					break;
+				}
 			}
 		}
 		return chart;
 	}
 
+	private void getMultipleJFreeChart() {
+		int nbChart = 0;
+		plot = new XYPlot();
+		for(ChartType type : this.chartTypes){
+			switch(type){
+			case PLOT: 
+				plot.setDataset(nbChart,getDataset());
+				XYDotRenderer plotRenderer = new XYDotRenderer();
+				plot.setRenderer(nbChart,plotRenderer);
+				nbChart++;
+				break;
+			case LINE:
+				plot.setDataset(nbChart,getDataset());
+				XYItemRenderer lineRenderer = new StandardXYItemRenderer();
+				plot.setRenderer(nbChart,lineRenderer);
+				nbChart++;
+				break;
+			case BAR:
+				plot.setDataset(nbChart,getDataset());
+				XYItemRenderer barRenderer = new XYBarRenderer(0.20);
+				plot.setRenderer(nbChart,barRenderer);
+				nbChart++;
+				break;
+			case PIE:
+				/*plot.setDataset(nbChart,getDataset());
+				XYItemRenderer pieRenderer = new XY(0.20);
+				plot.setRenderer(nbChart,barRenderer);
+				nbChart++;*/
+				break;
+			default:
+				break;
+			}
+
+
+		}
+		DateAxis domainAxis = new DateAxis("");   
+		domainAxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);  
+		plot.setDomainAxis(domainAxis);
+		ValueAxis rangeAxis = new NumberAxis("Value");   
+		plot.setRangeAxis(rangeAxis);
+		chart = new JFreeChart(plot);
+
+	}
+
+	/**
+	 * Initialize two renderer, one xyRenderer and a Bar renderer.
+	 * 
+	 * @return new JFreeChart
+	 */
 	private synchronized JFreeChart multiple(){
 		XYItemRenderer renderer1 = new XYBarRenderer(0.20);   
 		DateAxis domainAxis = new DateAxis("");   
@@ -562,24 +775,59 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		plot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
 		return new JFreeChart("Multiple", JFreeChart.DEFAULT_TITLE_FONT, plot, true); 
 	}
+
+	/**
+	 * Return a DefaultCategoryDataset for the bar chart
+	 * 
+	 * @return categoryDataset
+	 */
 	private synchronized DefaultCategoryDataset getCategoryDataset() {
 		if (categoryDataset == null)
 			categoryDataset = new DefaultCategoryDataset();
 		return categoryDataset;
 	}
 
+	/**
+	 * Creates a sample dataset.
+	 * 
+	 * @return A sample dataset.
+	 */
+	private DefaultBoxAndWhiskerCategoryDataset getBoxDataset() {
+		if(boxDataset == null)
+			boxDataset = new DefaultBoxAndWhiskerCategoryDataset();
+
+		return boxDataset;
+	}
+
+	/**
+	 * Return a DefaultPieDataset
+	 * 
+	 * @return pieDataset
+	 */
 	private synchronized DefaultPieDataset getPieDataset() {
 		if (pieDataset == null)
 			pieDataset = new DefaultPieDataset();
 		return pieDataset;
 	}
-	
+
+	/**
+	 * Return a waferDataset
+	 * 
+	 * @return waferDataset;
+	 */
 	private synchronized WaferMapDataset getWaferDataset() {
 		if (waferDataset == null)
 			waferDataset = new WaferMapDataset(30,30);
 		return waferDataset;
 	}
-	
+
+	/**
+	 * Return a XYSeries or create it.
+	 * 
+	 * @param _serieName
+	 * 			The name of the serie.
+	 * @return series.get(_serieName)
+	 */
 	private synchronized XYSeries getSeries(final String _serieName) {
 		if (firstSerie == null) {
 			firstSerie = _serieName;
@@ -595,11 +843,24 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		}
 		return series.get(_serieName);
 	}
-	
+
+	/**
+	 * 
+	 * @author Marcillaud Guilhem
+	 *
+	 * Intern class for a point corresponding to a serie_name
+	 */
 	private class PointRequest {
 		public final String serieName;
 		public final double x, y;
 
+		/**
+		 * 
+		 * @param serieName
+		 * 			The name of the serie.
+		 * @param x
+		 * @param y
+		 */
 		public PointRequest(String serieName, double x, double y) {
 			super();
 			this.serieName = serieName;
@@ -629,42 +890,52 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	}
 
 	//TODO
+	/**
+	 * Add the new point to the dataset to update the chart.
+	 * 
+	 * @param _pointRequest
+	 * 			The point to add.
+	 */
 	private void drawPoint(PointRequest _pointRequest) {
-		switch (chartType) {
-		case PLOT:
+		if(chartTypes != null){
 			getSeries(_pointRequest.serieName).add(_pointRequest.x, _pointRequest.y);
-			break;
-		case LINE:
-			getSeries(_pointRequest.serieName).addOrUpdate(_pointRequest.x, _pointRequest.y);
-			datasX.add(_pointRequest.x);
-			datasY.add(_pointRequest.y);
-			//calcul of the trending line
-			double sx = 0;
-			double scx = 0;
-			double sy = 0;
-			double prod = 0;
-			for(int i = 0; i< datasX.size();i++){
-				sx += datasX.get(i);
-				scx += Math.pow(datasX.get(i),2);
-				sy += datasY.get(i);
-				prod += datasX.get(i) * datasY.get(i);
-			}
-			double b = (datasX.size()*prod - (sx*sy))/((datasX.size()*scx)-Math.pow(sx, 2));
-			double a = sy/datasX.size() - b*(sx/datasX.size());
-			for(int i =0; i < datasX.get(datasX.size()-1);i++){
-				double res = b*i+a;
-				getSeries("Trending").addOrUpdate(i,res);
-			}
-			break;
-		case BAR:
-			getCategoryDataset().addValue(_pointRequest.y, _pointRequest.serieName, String.valueOf(_pointRequest.x));
-			break;
-		case PIE:
-			getPieDataset().insertValue(0,""+_pointRequest.x,_pointRequest.y);
-			break;
-		case WAFER:
-			//TODO
-			/*System.out.println(waferx);
+		}
+		else{
+			switch (chartType) {
+			case PLOT:
+				getSeries(_pointRequest.serieName).add(_pointRequest.x, _pointRequest.y);
+				break;
+			case LINE:
+				getSeries(_pointRequest.serieName).addOrUpdate(_pointRequest.x, _pointRequest.y);
+				datasX.add(_pointRequest.x);
+				datasY.add(_pointRequest.y);
+				//calcul of the trending line
+				double sx = 0;
+				double scx = 0;
+				double sy = 0;
+				double prod = 0;
+				for(int i = 0; i< datasX.size();i++){
+					sx += datasX.get(i);
+					scx += Math.pow(datasX.get(i),2);
+					sy += datasY.get(i);
+					prod += datasX.get(i) * datasY.get(i);
+				}
+				double b = (datasX.size()*prod - (sx*sy))/((datasX.size()*scx)-Math.pow(sx, 2));
+				double a = sy/datasX.size() - b*(sx/datasX.size());
+				for(int i =0; i < datasX.get(datasX.size()-1);i++){
+					double res = b*i+a;
+					getSeries("Trending").addOrUpdate(i,res);
+				}
+				break;
+			case BAR:
+				getCategoryDataset().addValue(_pointRequest.y, _pointRequest.serieName, String.valueOf(_pointRequest.x));
+				break;
+			case PIE:
+				getPieDataset().insertValue(0,""+_pointRequest.x,_pointRequest.y);
+				break;
+			case WAFER:
+				//TODO
+				/*System.out.println(waferx);
 			System.out.println(wafery);
 			getWaferDataset().addValue(_pointRequest.y, waferx, wafery);
 			plot2 = new WaferMapPlot(getWaferDataset(),wafR);
@@ -685,16 +956,24 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 			}
 			else
 				wafery++;*/
-			break;
-		case MULTIPLE:
-			getSeries(_pointRequest.serieName).addOrUpdate(_pointRequest.x, _pointRequest.y);
-			break;
+				break;
+			case MULTIPLE:
+				getSeries(_pointRequest.serieName).addOrUpdate(_pointRequest.x, _pointRequest.y);
+				break;
+			case BOX:
+				ArrayList<Double> listBox = new ArrayList<Double>();
+				listBox.add(_pointRequest.x);
+				getBoxDataset().add(listBox, "Value "+_pointRequest.y, "Type "+_pointRequest.y);
+			}
+			if (!getMainWindow().getFrame().isVisible())
+				getMainWindow().getFrame().setVisible(true);
 		}
-		if (!getMainWindow().getFrame().isVisible())
-			getMainWindow().getFrame().setVisible(true);
 
 	}
 
+	/**
+	 * All internal frame become icon.
+	 */
 	public static void minimizeAll() {
 		for (JInternalFrame jif : desktopPane.getAllFrames()) {
 			try {
@@ -705,12 +984,23 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 		}
 	}
 
+	/**
+	 * Change the name of the frame.
+	 * 
+	 * @param _name
+	 * 			The new name.
+	 */
 	public static void setFrameName(String _name) {
 		getMainWindow().setFrameName(_name);
 	}
-	
+
+	/**
+	 * Set if the chart is multiple or not.
+	 * 
+	 * @param multiple
+	 */
 	public void setMultiple(boolean multiple){
 		this.multiple = multiple;
 	}
-	
+
 }

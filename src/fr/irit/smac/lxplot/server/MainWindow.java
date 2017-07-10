@@ -141,14 +141,29 @@ public class MainWindow {
 		panel.add(btnForceQuit);
 	}
 
+	/**
+	 * Return the frame.
+	 * 
+	 * @return frame.
+	 */
 	public JFrame getFrame() {
 		return frame;
 	}
 
+	/**
+	 * Change the status
+	 * 
+	 * @param string
+	 */
 	public void setStatus(String string) {
 		status.setText(string);
 	}
 
+	/**
+	 * Change the name of the frame
+	 * 
+	 * @param _name
+	 */
 	public void setFrameName(String _name) {
 		frame.setName(_name);
 	}

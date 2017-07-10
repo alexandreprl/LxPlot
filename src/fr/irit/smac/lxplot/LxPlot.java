@@ -1,5 +1,6 @@
 package fr.irit.smac.lxplot;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -82,6 +83,7 @@ public class LxPlot {
 	public static ILxPlotChart getChart(final String _name, final ChartType _chartType) {
 		return getChart(_name, _chartType, true, -1);
 	}
+	
 	/**
 	 * Get the chart with the given name if any. Otherwise, create it.
 	 *
@@ -108,6 +110,49 @@ public class LxPlot {
 	 */
 	public static ILxPlotChart getChart(final String _name, final ChartType _chartType, final boolean _blocking, final int _maxItemCount) {
 		return LxPlot.getServer().getChart(_name, _chartType, _blocking, _maxItemCount);
+	}
+	
+
+	/**
+	 * Get the chart with the given name if any. Otherwise, create it.
+	 *
+	 * @param _name
+	 * @return
+	 */
+	public static ILxPlotChart getChart(final String _name, final List<ChartType> types) {
+		return getChart(_name, types, true, -1);
+	}
+
+	/**
+	 * Get the chart with the given name if any. Otherwise, create it.
+	 *
+	 * @param _name
+	 * @return
+	 */
+	public static ILxPlotChart getChart(final String _name, final List<ChartType> types, final boolean _blocking) {
+		return getChart(_name, types, _blocking, -1);
+	}
+	
+
+	/**
+	 * Get the chart with the given name if any. Otherwise, create it.
+	 *
+	 * @param _name
+	 * @return
+	 */
+	public static ILxPlotChart getChart(final String _name, final List<ChartType> types, final int _maxItemCount) {
+		return LxPlot.getServer().getChart(_name, types, true, _maxItemCount);
+	}
+	
+
+	/**
+	 * Get the chart with the given name if any. Otherwise, create it.
+	 *
+	 * @param _name
+	 * @return
+	 */
+	public static ILxPlotChart getChart(final String _name, final List<ChartType> types, final boolean _blocking, final int _maxItemCount) {
+		return LxPlot.getServer().getChart(_name, types, _blocking, _maxItemCount);
 	}
 
 	/**

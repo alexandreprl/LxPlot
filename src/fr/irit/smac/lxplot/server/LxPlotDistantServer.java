@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -79,5 +80,14 @@ public class LxPlotDistantServer implements ILxPlotServer {
 	@Override
 	public Map<String, ILxPlotChart> getCharts() {
 		return charts;
+	}
+
+	@Override
+	public ILxPlotChart getChart(String _name, List<ChartType> _chartType, boolean _blocking, int _maxItemCount) {
+		if (!charts.containsKey(_name)) {
+			charts.put(_name,
+					new LxPlotDistantChart(_name, _chartType, _maxItemCount, out));
+		}
+		return charts.get(_name);
 	}
 }

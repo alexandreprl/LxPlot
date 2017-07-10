@@ -3,6 +3,7 @@ package fr.irit.smac.lxplot.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -73,6 +74,14 @@ public class LxPlotServer implements ILxPlotServer, Runnable {
 
 	@Override
 	public synchronized ILxPlotChart getChart(String _name, ChartType _chartType, boolean _blocking, final int _maxItemCount) {
+		if (!charts.containsKey(_name)) {
+			charts.put(_name, new LxPlotChart(_name, _chartType, this, _blocking, _maxItemCount));
+		}
+		return charts.get(_name);
+	}
+	
+	@Override
+	public synchronized ILxPlotChart getChart(String _name, List<ChartType> _chartType, boolean _blocking, final int _maxItemCount) {
 		if (!charts.containsKey(_name)) {
 			charts.put(_name, new LxPlotChart(_name, _chartType, this, _blocking, _maxItemCount));
 		}

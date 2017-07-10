@@ -1,6 +1,7 @@
 package fr.irit.smac.lxplot.server;
 
 import java.io.PrintWriter;
+import java.util.List;
 
 import fr.irit.smac.lxplot.commons.ChartType;
 import fr.irit.smac.lxplot.interfaces.ILxPlotChart;
@@ -17,6 +18,15 @@ public class LxPlotDistantChart implements ILxPlotChart {
 	private final PrintWriter out;
 
 	public LxPlotDistantChart(final String _name, final ChartType _chartType, final int _maximumItemCount,
+			final PrintWriter _out) {
+		name = _name;
+		out = _out;
+		out.println("config;" + _name + ";" + _chartType.toString()+";"+_maximumItemCount);
+		out.flush();
+	}
+	
+
+	public LxPlotDistantChart(final String _name, final List<ChartType> _chartType, final int _maximumItemCount,
 			final PrintWriter _out) {
 		name = _name;
 		out = _out;
