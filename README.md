@@ -3,7 +3,7 @@
 A library for simple local or distant plotting
 
 ## Install
-Add the file [lx-plot-standalone.jar (Latest stable version: 1.0)](https://bitbucket.org/perlesa/lx-plot/raw/1.0/lx-plot-standalone.jar) to your project folder. Right click on it->Build path->Add to build path.
+Add the file [lx-plot-standalone.jar (Latest stable version: 1.1)](https://bitbucket.org/perlesa/lx-plot/raw/1.1/lx-plot-standalone.jar) to your project folder. Right click on it->Build path->Add to build path.
 	
 ## Use
 
