@@ -5,15 +5,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Paint;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,40 +19,25 @@ import java.util.TreeMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.swing.BorderFactory;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.Renderer;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.demo.*;
-import org.jfree.chart.labels.BoxAndWhiskerToolTipGenerator;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.annotations.XYTextAnnotation;
-import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickMarkPosition;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.CombinedDomainCategoryPlot;
 import org.jfree.chart.plot.DatasetRenderingOrder;
-import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.SpiderWebPlot;
 import org.jfree.chart.plot.WaferMapPlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.WaferMapRenderer;
-import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
-import org.jfree.chart.renderer.xy.SamplingXYLineRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYBoxAndWhiskerRenderer;
@@ -63,23 +45,13 @@ import org.jfree.chart.renderer.xy.XYDotRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.CombinedDataset;
 import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.general.PieDataset;
-import org.jfree.data.general.SeriesDataset;
 import org.jfree.data.general.WaferMapDataset;
 import org.jfree.data.statistics.BoxAndWhiskerItem;
-import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerXYDataset;
 import org.jfree.data.time.Day;
-import org.jfree.data.time.RegularTimePeriod;
-import org.jfree.data.xy.DefaultXYDataset;
-import org.jfree.data.xy.IntervalXYDataset;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.date.MonthConstants;
-import org.jfree.util.PaintList;
 
 import fr.irit.smac.lxplot.commons.ChartType;
 import fr.irit.smac.lxplot.interfaces.ILxPlotChart;
@@ -92,8 +64,6 @@ import fr.irit.smac.lxplot.interfaces.ILxPlotServer;
  */
 public class LxPlotChart implements ILxPlotChart, Runnable {
 	public static int cols = 2;
-	private static JMenuBar menuBar;
-	private static JMenu layoutMenu;
 	private static MainWindow window;
 	private static int chartCount = 0;
 	private static JDesktopPane desktopPane;
@@ -104,17 +74,16 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	// private JPanel chartContainer;
 	private XYSeriesCollection dataset;
 	private JFreeChart chart;
-	private JFreeChart chartBis;
-	private TitledBorder border;
+
 	private ChartType chartType = ChartType.PLOT;
 	private List<ChartType> chartTypes;
 	private ChartPanel chartPanel;
-	private ChartPanel chartPanelBis;
+
 	private String firstSerie;
 	// private JFrame chartFrame;
 	private JInternalFrame internalChartFrame;
 	private DefaultCategoryDataset categoryDataset;
-	private CombinedDomainCategoryPlot combinedCategoryDataset;
+
 	private DefaultPieDataset pieDataset;
 	private WaferMapDataset waferDataset;
 	private LinkedList<PointRequest> queue = new LinkedList<>();
@@ -130,22 +99,12 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	private List<Double> datasX;
 	private List<Double> datasY;
 
-	private XYSeriesCollection xyDataset;  
-	private IntervalXYDataset intervalXYDataset;
-	private XYItemRenderer renderer2;
-
-	private XYSeries series1;
-	private XYSeries series2;
+	private XYSeriesCollection xyDataset;
 	private XYPlot plot;
 	private WaferMapPlot plot2;
 	private WaferMapRenderer wafR;
 
 	private Day d ;
-	private int waferx = 1;
-	private int wafery = 0;
-	private ArrayList<Double> listWafer = new ArrayList<Double>();
-	private final int limx = 30;
-	private final int limy = 30;
 	private DefaultBoxAndWhiskerXYDataset boxDataset;
 
 	/**
@@ -443,7 +402,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 	public synchronized void addBox(List<Double> list) {
 		if(d == null)
 			d = new Day(new Date());
-		RegularTimePeriod regularTimePeriod = d.next();
+		
 		List<Double> l = new ArrayList<Double>();
 		l.add(3.0);
 		BoxAndWhiskerItem item = new BoxAndWhiskerItem(
@@ -1014,6 +973,11 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 				break;*/
 			case SPIDER:
 				getCategoryDataset().addValue(_pointRequest.y, _pointRequest.serieName, String.valueOf(_pointRequest.x));
+				break;
+			case BOX:
+				System.err.println("Unavailable type BOX");
+				break;
+			default:
 				break;
 			}
 			if (!getMainWindow().getFrame().isVisible())

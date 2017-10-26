@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 import fr.irit.smac.lxplot.commons.ChartType;
 import fr.irit.smac.lxplot.interfaces.ILxPlotChart;
@@ -24,7 +23,6 @@ public class LxPlotDistantServer implements ILxPlotServer {
 	private Socket socket;
 	private PrintWriter out;
 	private boolean uniqueWindow;
-	private ReentrantLock chartLock = new ReentrantLock();
 
 	public LxPlotDistantServer(final String _host, final int _port) {
 		try {

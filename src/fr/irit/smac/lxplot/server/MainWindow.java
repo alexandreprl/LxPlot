@@ -4,15 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,27 +22,13 @@ import javax.swing.event.ChangeListener;
 import fr.irit.smac.lxplot.Constants;
 import fr.irit.smac.lxplot.commons.Data;
 import fr.irit.smac.lxplot.commons.XJFrame;
-import java.awt.GridBagLayout;
 
 public class MainWindow {
 
 	private XJFrame frame;
 	private JLabel status;
-	private JPanel panel_1;
-	private JCheckBox chckbxSleep;
-	private JSpinner columnsSpinner;
-	private JPanel panel_5;
-	private JButton btnNewButton;
 	private Component horizontalGlue;
 	private JLabel lblNewLabel_1;
-	private Component verticalGlue;
-	private JButton btnNewButton_1;
-	private JPanel panel_2;
-	private JSpinner spinner;
-	private JButton btnNewButton_2;
-	private JButton btnNewButton_3;
-	private JPanel panel_3;
-	private JLabel lblNewLabel;
 	private JButton btnNewButton_4;
 	private JButton btnForceQuit;
 	private Component horizontalStrut;
