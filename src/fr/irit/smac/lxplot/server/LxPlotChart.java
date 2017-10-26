@@ -957,7 +957,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 				datasX.add(_pointRequest.x);
 				datasY.add(_pointRequest.y);
 				//calcul of the trending line
-				double sx = 0;
+				/*double sx = 0;
 				double scx = 0;
 				double sy = 0;
 				double prod = 0;
@@ -972,7 +972,7 @@ public class LxPlotChart implements ILxPlotChart, Runnable {
 				for(int i =0; i < datasX.get(datasX.size()-1);i++){
 					double res = b*i+a;
 					getSeries("Trending").addOrUpdate(i,res);
-				}
+				}*/
 				break;
 			case BAR:
 				getCategoryDataset().addValue(_pointRequest.y, _pointRequest.serieName, String.valueOf(_pointRequest.x));

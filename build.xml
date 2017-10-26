@@ -8,7 +8,7 @@
 	
 	<target name="build" description="Compile source tree java files">
 		<mkdir dir="${build.dir}" />
-		<javac destdir="${build.dir}" source="1.6" target="1.6">
+		<javac includeantruntime="false" destdir="${build.dir}" source="1.8" target="1.8">
 			<src path="${src.dir}" />
 			<classpath>
 				<fileset dir="${libs.dir}">
