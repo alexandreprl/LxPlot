@@ -2,9 +2,34 @@
 
 A library for simple local or distant plotting
 
-## Install
-Add the file [lx-plot-standalone.jar (Latest stable version: 1.1)](https://bitbucket.org/perlesa/lx-plot/raw/1.1/lx-plot-standalone.jar) to your project folder. Right click on it->Build path->Add to build path.
-	
+## Set up (Gradle)
+
+* Open build.gradle
+
+* Add jitpack to the repositories
+```
+repositories {
+    ...
+    // Add the following line
+    maven { url "https://jitpack.io" }
+}
+```
+
+* Add AMAK to the dependencies
+```
+dependencies {
+
+    // Add the two following lines
+    // AMAK
+    implementation 'org.bitbucket.perlesa:lx-plot:main-SNAPSHOT'
+    
+    ...
+}
+```
+
+* Click on the Gradle Refresh button
+
+
 ## Use
 
 Simply add
