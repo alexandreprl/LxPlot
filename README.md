@@ -21,7 +21,7 @@ dependencies {
 
     // Add the two following lines
     // AMAK
-    implementation 'org.bitbucket.perlesa:lx-plot:main-SNAPSHOT'
+    implementation 'com.github.alexandreprl:lxplot:main-SNAPSHOT'
     
     ...
 }
