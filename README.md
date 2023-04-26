@@ -20,7 +20,7 @@ repositories {
 dependencies {
 
     // Add the two following lines
-    // AMAK
+    // LxPlot
     implementation 'com.github.alexandreprl:lxplot:main-SNAPSHOT'
     
     ...
